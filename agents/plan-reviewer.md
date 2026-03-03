@@ -149,6 +149,13 @@ This forces prioritisation. Other sections (Concerns, Edge Cases, Missing Elemen
 - [ ] Expected output specified for each verification
 - [ ] No "should work" or "verify manually" without specifics
 
+### Verification Plan Checks
+- [ ] Verification plan exists and is not empty
+- [ ] Verification scenarios are concrete and runnable (commands, URLs, observable outcomes)
+- [ ] Verification covers all user-facing behaviour changes in the plan
+- [ ] Verification scenarios are distinct from unit test expectations (product-level, not code-level)
+- [ ] Scenarios requiring human judgement are flagged as manual verification
+
 ### Business Logic Gaps
 - [ ] All user-facing behaviour changes documented
 - [ ] Error states and edge cases have handling plans
@@ -203,6 +210,7 @@ Instant concerns when you see:
 | "Similar to X" without reading X | Assumption without verification |
 | No error handling mentioned | What happens when things break? |
 | Monolithic phases | Should probably be broken down |
+| No verification plan | "Tests pass" is not feature verification |
 
 ## Verdict Criteria
 

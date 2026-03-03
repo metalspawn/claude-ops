@@ -38,8 +38,25 @@ Provide:
   - Verification criteria for each step
   - Dependencies between steps
   - Risks or edge cases
+  - A **Verification Plan** — concrete, runnable scenarios that prove the feature works from a product/user perspective (see guidance below)
 
 Wait for the agent to return.
+
+#### Verification Plan Guidance
+
+Verification scenarios are NOT restated unit test expectations. They are product-level checks a human (or automated integration test) can execute against the running system.
+
+**Good verification scenarios:**
+- "User clicks logout → redirected to login page"
+- "Run `curl localhost:3000/api/health` → 200 OK with `{\"status\":\"healthy\"}`"
+- "Navigate to /settings → delete account button is visible and functional"
+- "Submit form with empty required field → inline validation error appears, form is not submitted"
+
+**Bad verification scenarios (too vague or just restating unit tests):**
+- "The logout function works correctly"
+- "API returns the right status code"
+- "Ensure the component renders"
+- "validateEmail() returns false for invalid input"
 
 ### Step 3: Review
 
@@ -60,8 +77,9 @@ Present the plan and review findings. Format as:
 
 1. **Summary** — One-line description of what the plan achieves
 2. **Steps** — The structured plan with discrete steps, file paths, and verification criteria
-3. **Review Findings** — Concerns, gaps, or suggestions from the reviewer (or "none" if clean)
-4. **Next** — "Approve this plan, then run `/orc:tasks` to create tasks."
+3. **Verification Plan** — The product-level scenarios that prove the feature works end-to-end
+4. **Review Findings** — Concerns, gaps, or suggestions from the reviewer (or "none" if clean)
+5. **Next** — "Approve this plan, then run `/orc:tasks` to create tasks."
 
 ## Rules
 

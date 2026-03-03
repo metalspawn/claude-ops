@@ -33,11 +33,18 @@ Read the approved plan and create tasks using `TaskCreate`. Each task MUST inclu
 3. Break it into discrete tasks — one per logical unit of work (not one per file, not one monolithic task)
 4. Create all tasks via `TaskCreate`
 5. Set up dependencies using `addBlockedBy` / `addBlocks` where the plan defines ordering constraints
-6. Present the created task list to the user for confirmation before execution begins
+6. **Create verification task** — Create a final task from the plan's Verification Plan section:
+   - Subject reflects the specific feature (e.g., "Verify authentication behaviour")
+   - `metadata: { type: "verification" }`
+   - `blockedBy` all implementation tasks
+   - Description contains the verification scenarios from the plan verbatim — these ARE the acceptance criteria (do not add separate acceptance criteria)
+   - activeForm: present continuous matching the subject (e.g., "Verifying authentication behaviour")
+7. Present the created task list to the user for confirmation before execution begins
 
 ## Rules
 
 - Every task MUST have acceptance criteria — no exceptions
 - Reference specific file paths from the plan, not vague descriptions
 - Tasks should be ordered so that foundational work (types, utilities, API layers) comes before dependent work (UI components, integration)
+- The verification task MUST be the last task created, blocked by all implementation tasks
 - Do NOT begin executing tasks — only create them. Execution starts with `/orc:execute` after the user confirms.

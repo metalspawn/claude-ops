@@ -26,6 +26,14 @@ For each task, follow these steps in exact order. Do NOT skip ahead. Each step h
 - Confirm all `blockedBy` tasks are complete. If blocked, skip to the next unblocked task.
 - `TaskUpdate(status='in_progress')`.
 
+### Verification Tasks
+
+If the task has `metadata.type === "verification"`, skip the main loop (Step 2 Implement, Step 3 Review + Validate, Step 4 Commit) and follow this path instead:
+
+- Spawn the `validator` agent with the verification scenarios from the task description.
+- **PASS** → proceed to Step 5 (mark complete).
+- **FAIL** → report failing scenarios. Spawn `worker` to fix the failing areas. Re-run validator. Repeat until PASS.
+
 ### Step 2: Implement — delegate to `worker`
 - Spawn the `worker` agent with the task description, acceptance criteria, and file paths.
 - NEVER edit implementation files yourself. NEVER substitute with direct tool calls.
@@ -86,4 +94,5 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/): `type(scope
 - NEVER skip any of the three review gates
 - NEVER commit without all three gates passing in the current cycle
 - NEVER re-run only the failed gate after a fix — ALL THREE must re-run
+- Verification tasks skip worker/reviewers/commit — validator only. Verification FAIL blocks completion.
 - If blocked by human-required input (credentials, decisions, access), stop and report

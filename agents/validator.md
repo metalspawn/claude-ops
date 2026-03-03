@@ -91,6 +91,10 @@ Detect project type and run appropriate checks:
 | Tests | >=80% pass | Document pre-existing failures separately |
 | Build | Success | Must compile/build without errors |
 
+### Verification Tasks
+
+For tasks with `metadata.type === "verification"`, the standard checks above (type check, lint, tests, build) are NOT run. Only the verification scenarios described in the task are executed. See the [Verification Scenarios](#verification-scenarios) section for details.
+
 ### Verdict Format
 
 End EVERY report with a binary verdict:
@@ -267,6 +271,60 @@ npx eslint src/auth/
 # Jest - specific tests
 npx jest src/auth/
 ```
+
+## Verification Scenarios
+
+Some tasks are product-level verification rather than standard validation. These are tasks with `metadata.type === "verification"` and contain scenarios that prove a feature works end-to-end — distinct from running tests, linters, and type checks.
+
+### What Gets Verified
+
+Verification scenarios check that a feature is correctly wired and behaves as expected at the product level. Examples:
+
+- Running a CLI command and checking its output matches expectations
+- Hitting an API endpoint and verifying the response status/body
+- Checking that a route, component, or config entry exists and is connected correctly
+- Running e2e or integration test suites targeting the specific feature
+
+### How to Execute
+
+Run each scenario described in the task. Report per-scenario pass/fail with the command or check performed.
+
+### Manual Verification
+
+Some scenarios require human judgement (visual design, UX feel, email delivery). These cannot be automated. Handle them as follows:
+
+- Flag clearly as "MANUAL VERIFICATION REQUIRED" in the report
+- Surface to the user with enough context to perform the check
+- Do NOT let manual items block the automated verdict
+
+### Output Format
+
+```
+### Feature Verification
+
+**Scenario: User can reset password**
+- Run `npm run test:e2e -- --grep "password reset"` → PASS
+- Check route `/reset-password` exists in router config → PASS
+
+**Scenario: Reset email is sent**
+- MANUAL VERIFICATION REQUIRED: Trigger reset and check email delivery
+
+**Automated: 2/2 PASS**
+**Manual: 1 item flagged for human review**
+
+VERDICT: PASS (1 manual item pending)
+```
+
+### Verdict Rules for Verification Tasks
+
+| Condition | Verdict |
+|-----------|---------|
+| All automated scenarios pass, no manual items | VERDICT: PASS |
+| All automated scenarios pass, manual items exist | VERDICT: PASS (N manual items pending) |
+| Any automated scenario fails | VERDICT: FAIL |
+| Only manual items, no automated scenarios | VERDICT: PASS (all items require manual review) |
+
+Manual-only items never block the verdict. Only automated scenario failures produce a FAIL.
 
 ## Language-Specific Validators
 
