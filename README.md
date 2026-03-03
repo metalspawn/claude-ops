@@ -5,16 +5,26 @@ A Claude Code plugin that provides structured, multi-agent workflows for non-tri
 ## The Flow
 
 ```
-/orc:plan <task>  →  approve  →  /orc:tasks  →  confirm  →  /orc:execute
+/orc:plan → approve → /orc:tasks → confirm → /orc:execute → /orc:ship
+                          │                                      │
+                   creates branch                     push → PR → self-review → triage
+                   (if needed)                               │
+                                                    findings? → /orc:plan or /orc:execute → /orc:ship
+                                                    clean? → ready for human review
+                                                             │
+                                                    /orc:pull-comments → triage → /orc:plan or /orc:execute → /orc:ship
 ```
 
-Three checkpoints. Three skills. Five specialised agents.
+Six skills. Five specialised agents.
 
 | Phase | Skill | What happens |
 |-------|-------|-------------|
 | **Plan** | `/orc:plan` | Explore codebase → produce plan → critical review → present for approval |
-| **Tasks** | `/orc:tasks` | Create tasks with acceptance criteria from the approved plan |
+| **Branch** | `/orc:branch` | Create a feature branch (invoked by `/orc:tasks` or directly) |
+| **Tasks** | `/orc:tasks` | Branch setup → create tasks with acceptance criteria from the plan |
 | **Execute** | `/orc:execute` | For each task: worker implements → three parallel review gates → commit |
+| **Ship** | `/orc:ship` | Push → create/update PR → self-review → triage findings |
+| **Review** | `/orc:pull-comments` | Fetch external PR comments → categorise → triage → route to next step |
 
 For simple, direct tasks: `/orc:execute <task>` skips planning and creates a single task inline.
 
@@ -51,6 +61,20 @@ Any FAIL → worker fixes → all three re-run
 
 They check orthogonal concerns — conventions, naming, and correctness — so all three must re-run after any fix.
 
+## Shipping
+
+Once all tasks pass their review gates and are committed, `/orc:ship` handles the PR lifecycle:
+
+1. **Push and PR** — pushes the branch and creates (or updates) a pull request
+2. **Self-review** — runs the built-in `/review-pr` skill against the PR to catch issues before a human sees them
+3. **Triage** — categorises findings by severity and routes them:
+   - Findings that need work feed back into `/orc:plan` (for non-trivial changes) or `/orc:execute` (for straightforward fixes), then `/orc:ship` again
+   - A clean self-review means the PR is ready for human review
+
+After a human reviews the PR, `/orc:pull-comments` fetches their feedback, categorises it, and routes it the same way — back through `/orc:plan` or `/orc:execute` and then `/orc:ship` to update the PR.
+
+No new agents are needed for shipping. `/orc:ship` delegates to the built-in `/review-pr` skill for self-review.
+
 ## Installation
 
 ```bash
@@ -71,7 +95,7 @@ For the code-reviewer to be useful, your project needs a `CLAUDE.md` defining co
 ## Documentation
 
 - [CLAUDE.md Setup Guide](docs/claude-md-guide.md) — How to configure your global CLAUDE.md
-- [Workshop](docs/workshop.md) — 90-minute walkthrough of the full flow
+- [Workshop](docs/workshop.md) — 100-minute walkthrough of the full flow
 
 ## Design Principles
 

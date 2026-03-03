@@ -5,6 +5,10 @@ description: "Create detailed tasks from an approved plan with file references a
 
 # /orc:tasks — Create Tasks from Approved Plan
 
+## Input
+
+$ARGUMENTS
+
 Read the approved plan and create tasks using `TaskCreate`. Each task MUST include:
 
 ## Required Fields
@@ -24,11 +28,12 @@ Read the approved plan and create tasks using `TaskCreate`. Each task MUST inclu
 
 ## Process
 
-1. Read the approved plan in full
-2. Break it into discrete tasks — one per logical unit of work (not one per file, not one monolithic task)
-3. Create all tasks via `TaskCreate`
-4. Set up dependencies using `addBlockedBy` / `addBlocks` where the plan defines ordering constraints
-5. Present the created task list to the user for confirmation before execution begins
+1. **Branch setup** — Invoke `/orc:branch` via the `Skill` tool, passing `$ARGUMENTS`. If already on a feature branch, this is a no-op.
+2. Read the approved plan in full
+3. Break it into discrete tasks — one per logical unit of work (not one per file, not one monolithic task)
+4. Create all tasks via `TaskCreate`
+5. Set up dependencies using `addBlockedBy` / `addBlocks` where the plan defines ordering constraints
+6. Present the created task list to the user for confirmation before execution begins
 
 ## Rules
 

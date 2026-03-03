@@ -22,10 +22,14 @@ Below is a recommended snippet to add to your global CLAUDE.md. Adapt it to your
 | Skill | When | What it does |
 |---|---|---|
 | `/orc:plan <task>` | Non-trivial work | Explore → Plan → Review → present for approval |
-| `/orc:tasks` | After plan approval | Create tasks with acceptance criteria from the approved plan |
+| `/orc:branch <desc>` | Need a feature branch | Create branch from name/ticket (auto-invoked by `/orc:tasks`) |
+| `/orc:tasks` | After plan approval | Branch setup → create tasks with acceptance criteria |
 | `/orc:execute` | After tasks exist | Run the worker → review → validate → commit pipeline |
+| `/orc:ship` | After execution completes | Push → PR → self-review → triage findings |
+| `/orc:pull-comments` | After human PR review | Fetch external comments → categorise → triage → route |
 
-The full flow is: `/orc:plan` → approve → `/orc:tasks` → confirm → `/orc:execute`.
+The full flow is: `/orc:plan` → approve → `/orc:tasks` → confirm → `/orc:execute` → `/orc:ship`.
+After human review: `/orc:pull-comments` → triage → `/orc:plan` or `/orc:execute` → `/orc:ship`.
 For clear, direct tasks: `/orc:execute <task>` (creates a single task and runs the pipeline).
 
 ## When to Plan
@@ -69,6 +73,8 @@ The Task system is the scratchpad for orchestrating multi-agent work:
 - **Decision table** — Claude knows when to suggest `/orc:plan` vs act directly
 - **Model inheritance** — prevents agents from being downgraded to cheaper models
 - **Task system context** — agents understand the coordination layer
+- **Shipping workflow** — Push, PR creation, self-review, and external feedback triage
+- **Branch management** — Automatic feature branch creation with project-specific naming
 
 ## What to Add Yourself
 
@@ -77,3 +83,19 @@ The snippet above is workflow-only. You'll want to add your own:
 - **Principles** — minimal impact, targeted implementation, code quality standards
 - **Communication preferences** — language, tone, directness rules
 - **Project-specific conventions** — these belong in per-project CLAUDE.md files, not global
+
+## Branch Naming Conventions
+
+The `/orc:branch` skill checks your project's CLAUDE.md for a "Branch" or "Branch Naming" section. If found, it follows that convention exactly. If not, it falls back to defaults: `<type>/<ticket>-<slug>`.
+
+To customise branch naming for a project, add a section like this to the project's CLAUDE.md:
+
+```markdown
+## Branch Naming
+
+- Format: `<type>/<ticket>-<short-description>`
+- Types: feat, fix, chore, refactor, docs, test
+- Example: `feat/PROJ-123-add-dark-mode`
+```
+
+This overrides the default convention for all `/orc:branch` invocations in that project.

@@ -2,11 +2,11 @@
 
 ## Overview
 
-**Duration:** 90 minutes
+**Duration:** 100 minutes
 **Format:** Walkthrough + hands-on (everyone drives)
 **Prerequisite:** Claude Code installed and authenticated, `orc` plugin installed
 
-This workshop covers the agentic workflow for non-trivial code changes: **collaborative planning** followed by **autonomous execution** with parallel review gates. By the end, you'll have run through the full cycle yourself.
+This workshop covers the agentic workflow for non-trivial code changes: **collaborative planning** followed by **autonomous execution** with parallel review gates, then **shipping and handling feedback**. By the end, you'll have run through the full cycle yourself.
 
 ---
 
@@ -17,7 +17,7 @@ This workshop covers the agentic workflow for non-trivial code changes: **collab
 | 0–15 min | **Part 1: Why This Flow Exists** | Presentation |
 | 15–35 min | **Part 2: The Components** | Walkthrough |
 | 35–50 min | **Part 3: The Detail That Makes It Work** | Deep dive |
-| 50–90 min | **Part 4: Hands-On** | Everyone drives |
+| 50–100 min | **Part 4: Hands-On** | Everyone drives |
 
 ---
 
@@ -35,32 +35,38 @@ When you ask an AI assistant to "add feature X", it jumps straight to implementa
 
 This is the same problem we'd have with a new hire who skips the team's PR process. The fix isn't better prompts — it's better process.
 
-### The Solution: Three-Phase Flow
+### The Solution: Plan → Execute → Ship → Feedback
 
 ```
-/orc:plan                      /orc:tasks              /orc:execute
-┌──────────────────────┐       ┌──────────────┐       ┌──────────────────────────────┐
-│                      │       │              │       │                              │
-│  Explore ──► Plan    │  OK   │  Create      │  OK   │  For each task:              │
-│       │       │      │ ────► │  tasks with  │ ────► │  ┌────────────────────────┐   │
-│       ▼       ▼      │       │  acceptance  │       │  │ worker (implement)     │   │
-│  Plan Reviewer       │       │  criteria    │       │  │       │                │   │
-│       │              │       │              │       │  │       ▼                │   │
-│       ▼              │       │  Present     │       │  │ ┌─────┬────────┬────┐  │   │
-│  Present to human    │       │  for review  │       │  │ │code-│semantic│vali│  │   │
-│                      │       │              │       │  │ │revwr│reviewer│dtor│  │   │
-└──────────────────────┘       └──────────────┘       │  │ └──┬──┴───┬────┴─┬──┘  │   │
-                                                      │  │    ▼      ▼      ▼     │   │
-                                                      │  │ All PASS? → Commit     │   │
-                                                      │  │ Any FAIL? → Fix → Retry│   │
-                                                      │  └────────────────────────┘   │
-                                                      └──────────────────────────────┘
+/orc:plan        /orc:tasks       /orc:execute        /orc:ship        /orc:pull-comments
+┌────────────┐   ┌────────────┐   ┌────────────────┐   ┌────────────┐   ┌─────────────────┐
+│            │   │            │   │                │   │            │   │                 │
+│ Explore    │OK │ Create     │OK │ For each task: │OK │ Push → PR  │   │ Fetch external  │
+│   ──► Plan │──►│ tasks with │──►│  worker        │──►│ Self-review│   │ PR comments     │
+│     │      │   │ acceptance │   │    │           │   │ Triage     │   │ Categorise      │
+│     ▼      │   │ criteria   │   │    ▼           │   │ findings   │   │ Route           │
+│ Plan Review│   │            │   │  Review gates  │   │            │   │                 │
+│     │      │   │ Present    │   │  (parallel)    │   │            │   │                 │
+│     ▼      │   │ for review │   │    │           │   │            │   │                 │
+│ Present to │   │            │   │    ▼           │   │            │   │                 │
+│ human      │   │            │   │  All PASS?     │   │            │   │                 │
+│            │   │            │   │  → Commit      │   │            │   │                 │
+└────────────┘   └────────────┘   └────────────────┘   └─────┬──────┘   └────────┬────────┘
+                                                             │                   │
+                                                             │   Findings or     │
+                                                             │   feedback?       │
+                                                             │       │           │
+                                                             ▼       ▼           │
+                                                        /orc:execute ◄───────────┘
+                                                        (fix and re-ship)
 ```
 
 Three checkpoints give you control:
 1. **After plan** — review, adjust, or memorise the plan
 2. **After tasks** — review task breakdown and acceptance criteria
 3. **Execute** — autonomous from here
+
+Then ship opens the PR, self-reviews it, and pull-comments brings external feedback back into the cycle.
 
 ### Why Not Just "Claude, do the thing"?
 
@@ -74,15 +80,18 @@ Three checkpoints give you control:
 
 ### 2.1 The Plugin (`orc`)
 
-The `orc` plugin provides three skills and five agents:
+The `orc` plugin provides six skills and five agents:
 
 **Skills (workflow orchestration):**
 
 | Skill | Purpose |
 |-------|---------|
 | `/orc:plan` | Explore → Plan → Review → present for approval |
-| `/orc:tasks` | Create tasks with acceptance criteria from the plan |
+| `/orc:branch` | Create feature branch (auto-invoked by `/orc:tasks` or standalone) |
+| `/orc:tasks` | Branch setup → create tasks with acceptance criteria |
 | `/orc:execute` | Worker → parallel review gates → commit |
+| `/orc:ship` | Push → PR → self-review → triage findings |
+| `/orc:pull-comments` | Fetch external PR comments → categorise → triage |
 
 **Agents (specialised roles):**
 
@@ -172,7 +181,7 @@ When a gate fails:
 
 ---
 
-## Part 4: Hands-On Exercise (40 min)
+## Part 4: Hands-On Exercise (50 min)
 
 ### Setup (5 min)
 
@@ -234,7 +243,36 @@ Approve when satisfied.
 - Does the validator distinguish new failures from pre-existing ones?
 - When a gate fails, does the fix cycle work?
 
-#### Step 4: Debrief (~5 min)
+#### Step 4: Ship (~5 min)
+
+```
+/orc:ship
+```
+
+**Watch for:**
+- Does the preflight catch any issues (uncommitted changes, incomplete tasks)?
+- Is the PR title derived correctly from the branch name?
+- Does the self-review (via `/review-pr`) find anything?
+- How are findings categorised (Must Address / Should Consider / Nitpick)?
+- Does the triage flow feel natural?
+
+If findings are selected, address them via `/orc:execute <description>` and re-ship.
+
+#### Step 5: Handle PR Feedback (~5 min)
+
+*This step simulates receiving external PR comments. Have a partner (or the facilitator) leave a review comment on your PR, then:*
+
+```
+/orc:pull-comments
+```
+
+**Watch for:**
+- Are comments correctly categorised (Blocking / Suggestion / Question / Nitpick)?
+- Does CHANGES_REQUESTED elevate all inline comments to Blocking?
+- Are bot comments filtered out?
+- Does the routing make sense (questions → reply on PR, code changes → `/orc:plan` or `/orc:execute`)?
+
+#### Step 6: Debrief (~5 min)
 
 After the cycle completes, check:
 - The git log — is the commit message conventional?
@@ -247,6 +285,7 @@ After the cycle completes, check:
 2. **Where did it add friction?** Was any gate unnecessary for this change?
 3. **What would you change?** What conventions matter most for your projects?
 4. **Project CLAUDE.md:** What conventions should you codify?
+5. **Shipping workflow:** Did the self-review catch things you'd have missed? Was the PR body useful?
 
 ---
 
