@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DRAFTS_DIR="$(cd "$(dirname "$0")/../drafts" && pwd)"
+
+usage() {
+  echo "Usage: sync-instructions <project> <target-dir>"
+  echo ""
+  echo "Symlinks draft instructions from claude-ops/drafts/<project>/ into <target-dir>,"
+  echo "preserving directory structure."
+  echo ""
+  echo "Available projects:"
+  for dir in "$DRAFTS_DIR"/*/; do
+    name="$(basename "$dir")"
+    [[ "$name" == "templates" ]] && continue
+    count=$(find "$dir" -type f | wc -l | tr -d ' ')
+    echo "  $name  ($count files)"
+  done
+  echo ""
+  echo "Options:"
+  echo "  --diff    Show what differs between drafts and target (no copy)"
+  echo "  --list    List files that would be synced"
+  exit 1
+}
+
+[[ $# -lt 1 ]] && usage
+
+# Parse flags
+DIFF_MODE=false
+LIST_MODE=false
+PROJECT=""
+TARGET=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --diff) DIFF_MODE=true; shift ;;
+    --list) LIST_MODE=true; shift ;;
+    -h|--help) usage ;;
+    *)
+      if [[ -z "$PROJECT" ]]; then
+        PROJECT="$1"
+      elif [[ -z "$TARGET" ]]; then
+        TARGET="$1"
+      else
+        echo "Error: unexpected argument '$1'" >&2
+        usage
+      fi
+      shift
+      ;;
+  esac
+done
+
+[[ -z "$PROJECT" ]] && usage
+
+SOURCE="$DRAFTS_DIR/$PROJECT"
+if [[ ! -d "$SOURCE" ]]; then
+  echo "Error: no drafts found for project '$PROJECT'" >&2
+  echo "Available: $(ls -1 "$DRAFTS_DIR" | grep -v templates | tr '\n' ' ')" >&2
+  exit 1
+fi
+
+# List mode — just show what would be synced
+if $LIST_MODE; then
+  find "$SOURCE" -type f | while read -r file; do
+    rel="${file#$SOURCE/}"
+    echo "$rel"
+  done
+  exit 0
+fi
+
+# Require target for diff and copy modes
+if [[ -z "$TARGET" ]]; then
+  echo "Error: <target-dir> required" >&2
+  usage
+fi
+
+TARGET="$(cd "$TARGET" 2>/dev/null && pwd || echo "$TARGET")"
+if [[ ! -d "$TARGET" ]]; then
+  echo "Error: target directory '$TARGET' does not exist" >&2
+  exit 1
+fi
+
+# Diff mode — report symlink states
+if $DIFF_MODE; then
+  find "$SOURCE" -type f | while read -r file; do
+    rel="${file#$SOURCE/}"
+    target_file="$TARGET/$rel"
+    if [[ ! -e "$target_file" && ! -L "$target_file" ]]; then
+      echo "NEW: $rel"
+    elif [[ -L "$target_file" ]]; then
+      link_target="$(readlink "$target_file")"
+      if [[ ! -e "$target_file" ]]; then
+        echo "STALE: $rel (dangling symlink)"
+      elif [[ "$link_target" == "$file" ]]; then
+        echo "OK: $rel (symlinked)"
+      else
+        echo "RELINK: $rel ($link_target -> $file)"
+      fi
+    else
+      echo "CONVERT: $rel (regular file -> symlink)"
+      diff --color -u "$target_file" "$file" | head -30
+      echo ""
+    fi
+  done
+  exit 0
+fi
+
+# Link mode — create symlinks
+find "$SOURCE" -type f | while read -r file; do
+  rel="${file#$SOURCE/}"
+  target_file="$TARGET/$rel"
+  target_dir="$(dirname "$target_file")"
+  mkdir -p "$target_dir"
+  ln -sf "$file" "$target_file"
+  echo "  $rel -> $file"
+done
+
+echo "Linked $PROJECT instructions into $TARGET"
