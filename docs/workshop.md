@@ -37,6 +37,8 @@ This is the same problem we'd have with a new hire who skips the team's PR proce
 
 ### The Solution: Plan → Execute → Ship → Feedback
 
+For larger features that span multiple PRs, `/orc:decompose` breaks them into ordered, independently shippable steps first — then each step runs through the cycle below.
+
 ```
 /orc:plan        /orc:tasks       /orc:execute        /orc:ship        /orc:pull-comments
 ┌────────────┐   ┌────────────┐   ┌────────────────┐   ┌────────────┐   ┌─────────────────┐
@@ -80,12 +82,13 @@ Then ship opens the PR, self-reviews it, and pull-comments brings external feedb
 
 ### 2.1 The Plugin (`orc`)
 
-The `orc` plugin provides six skills and five agents:
+The `orc` plugin provides seven skills and five agents:
 
 **Skills (workflow orchestration):**
 
 | Skill | Purpose |
 |-------|---------|
+| `/orc:decompose` | Break feature into PR-sized steps (for multi-PR work) |
 | `/orc:plan` | Explore → Plan → Review → present for approval |
 | `/orc:branch` | Create feature branch (auto-invoked by `/orc:tasks` or standalone) |
 | `/orc:tasks` | Branch setup → create tasks with acceptance criteria |

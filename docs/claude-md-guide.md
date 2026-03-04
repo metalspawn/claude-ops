@@ -21,6 +21,7 @@ Below is a recommended snippet to add to your global CLAUDE.md. Adapt it to your
 
 | Skill | When | What it does |
 |---|---|---|
+| `/orc:decompose <feature>` | Multi-PR features | Break into PR-sized steps → each step uses the full flow below |
 | `/orc:plan <task>` | Non-trivial work | Explore → Plan → Review → present for approval |
 | `/orc:branch <desc>` | Need a feature branch | Create branch from name/ticket (auto-invoked by `/orc:tasks`) |
 | `/orc:tasks` | After plan approval | Branch setup → create tasks with acceptance criteria |
@@ -29,6 +30,7 @@ Below is a recommended snippet to add to your global CLAUDE.md. Adapt it to your
 | `/orc:pull-comments` | After human PR review | Fetch external comments → categorise → triage → route |
 
 The full flow is: `/orc:plan` → approve → `/orc:tasks` → confirm → `/orc:execute` → `/orc:ship`.
+For multi-PR features: `/orc:decompose` → approve → then for each step: `/orc:plan` → `/orc:tasks` → `/orc:execute` → `/orc:ship`.
 After human review: `/orc:pull-comments` → triage → `/orc:plan` or `/orc:execute` → `/orc:ship`.
 For clear, direct tasks: `/orc:execute <task>` (creates a single task and runs the pipeline).
 
@@ -36,10 +38,11 @@ For clear, direct tasks: `/orc:execute <task>` (creates a single task and runs t
 
 | Situation | Action |
 |---|---|
+| Multi-PR feature | `/orc:decompose` |
 | Multi-file changes | `/orc:plan` |
 | Architectural decisions | `/orc:plan` |
 | Ambiguous or open-ended requirements | `/orc:plan` |
-| New feature implementation | `/orc:plan` |
+| Single PR-sized change | `/orc:plan` |
 | Single-file bug fix with obvious cause | Act directly or `/orc:execute` |
 | Trivial changes (typos, formatting, config) | Act directly |
 | Explicit instruction with clear scope | `/orc:execute` |

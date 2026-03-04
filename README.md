@@ -15,10 +15,11 @@ A Claude Code plugin that provides structured, multi-agent workflows for non-tri
                                                     /orc:pull-comments → triage → /orc:plan or /orc:execute → /orc:ship
 ```
 
-Six skills. Five specialised agents.
+Seven skills. Five specialised agents.
 
 | Phase | Skill | What happens |
 |-------|-------|-------------|
+| **Decompose** | `/orc:decompose` | Break a feature into PR-sized steps — use when work spans multiple PRs |
 | **Plan** | `/orc:plan` | Explore codebase → produce plan → critical review → present for approval |
 | **Branch** | `/orc:branch` | Create a feature branch (invoked by `/orc:tasks` or directly) |
 | **Tasks** | `/orc:tasks` | Branch setup → create tasks with acceptance criteria from the plan |
@@ -27,6 +28,10 @@ Six skills. Five specialised agents.
 | **Review** | `/orc:pull-comments` | Fetch external PR comments → categorise → triage → route to next step |
 
 For simple, direct tasks: `/orc:execute <task>` skips planning and creates a single task inline.
+
+### For Larger Features
+
+When work spans multiple PRs, start with `/orc:decompose` to break the feature into ordered, independently shippable steps. After approving the decomposition, run each step through the standard `/orc:plan` → `/orc:tasks` → `/orc:execute` → `/orc:ship` cycle.
 
 ## Agents
 
