@@ -1,0 +1,15 @@
+{
+  "name": "claude-ops",
+  "version": "0.1.0",
+  "description": "Orchestrated agentic workflows for Claude Code — plan, review, and execute with parallel quality gates",
+  "owner": {
+    "name": "metalspawn"
+  },
+  "plugins": [
+    {
+      "name": "orc",
+      "source": "./",
+      "description": "Decompose features, plan implementations, manage tasks, and execute work with multi-agent coordination"
+    }
+  ]
+}
