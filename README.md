@@ -19,8 +19,8 @@ Seven skills. Five specialised agents.
 
 | Phase | Skill | What happens |
 |-------|-------|-------------|
-| **Decompose** | `/orc:decompose` | Break a feature into PR-sized steps — use when work spans multiple PRs |
-| **Plan** | `/orc:plan` | Explore codebase → produce plan → critical review → present for approval |
+| **Decompose** | `/orc:decompose` | Break a feature into PR-sized steps — clarifies boundaries with you first |
+| **Plan** | `/orc:plan` | Explore codebase → clarify ambiguity → produce plan → critical review → present for approval |
 | **Branch** | `/orc:branch` | Create a feature branch (invoked by `/orc:tasks` or directly) |
 | **Tasks** | `/orc:tasks` | Branch setup → create tasks with acceptance criteria from the plan |
 | **Execute** | `/orc:execute` | For each task: worker implements → three parallel review gates → commit |
@@ -65,6 +65,27 @@ Any FAIL → worker fixes → all three re-run
 ```
 
 They check orthogonal concerns — conventions, naming, and correctness — so all three must re-run after any fix.
+
+## Verification
+
+Plans include a **Verification Plan** — concrete, product-level scenarios that prove the feature works end-to-end. These aren't restated unit tests; they're things a human (or integration test) can run against the system:
+
+- "User clicks logout → redirected to login page"
+- "Run `curl localhost:3000/api/health` → 200 OK"
+- "Submit form with empty required field → inline validation error appears"
+
+`/orc:tasks` creates a final verification task (blocked by all implementation tasks) that the validator runs after everything is built. Manual-only scenarios are flagged without blocking.
+
+## Interactive Clarification
+
+Both `/orc:decompose` and `/orc:plan` pause after codebase exploration to check in with you when:
+
+- Requirements are ambiguous (2x+ effort difference between interpretations)
+- Multiple viable approaches exist with meaningful trade-offs
+- Decomposition boundaries aren't obvious from the code
+- Acceptance criteria can't be defined from the information available
+
+When everything is clear, the step is skipped automatically — no unnecessary interruptions.
 
 ## Shipping
 
