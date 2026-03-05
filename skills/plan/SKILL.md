@@ -22,9 +22,20 @@ Provide:
 - Request to identify: affected files, dependencies, existing patterns, constraints
 - Request to surface anything that might affect the approach
 
-If the task is ambiguous (2x+ effort difference between interpretations), ask clarifying questions BEFORE proceeding.
-
 Wait for the agent to return.
+
+### Step 1b: Clarify
+
+After exploration, check whether requirements are clear enough to plan confidently. Use `AskUserQuestion` to resolve any of the following BEFORE proceeding:
+
+- **Ambiguous requirements** — the task could reasonably be interpreted in ways that differ by 2x+ effort
+- **Multiple viable approaches** — exploration revealed two or more architectural paths with meaningful trade-offs (e.g., client-side vs server-side, new table vs extending existing)
+- **Missing acceptance criteria** — you can't define verification scenarios because the expected behaviour isn't specified
+- **Unstated constraints** — the task touches areas with conventions, dependencies, or limitations you can't confirm from the codebase alone
+
+If none of these apply, proceed directly to Step 2.
+
+When asking, be specific about what you found and what decision you need. Present concrete options with trade-offs rather than open-ended questions.
 
 ### Step 2: Plan
 

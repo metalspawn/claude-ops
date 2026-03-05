@@ -22,9 +22,19 @@ Provide:
 - Request to identify: affected systems, module boundaries, dependencies between components, existing patterns, integration points
 - Request to surface: what can change independently, what has coupling that forces ordering, what existing tests or contracts constrain the work
 
-If the feature is ambiguous (2x+ effort difference between interpretations), ask clarifying questions BEFORE proceeding.
-
 Wait for the agent to return.
+
+### Step 1b: Clarify
+
+After exploration, check whether the feature is well-enough defined to decompose confidently. Use `AskUserQuestion` to resolve any of the following BEFORE proceeding:
+
+- **Ambiguous scope** — the feature could reasonably be interpreted in ways that differ by 2x+ effort (e.g., "add auth" could mean OAuth, magic links, or both)
+- **Unclear boundaries** — exploration revealed coupling or shared concerns where the natural split point isn't obvious (e.g., should the API and UI ship together or separately?)
+- **Missing context** — the feature references systems, constraints, or requirements you can't verify from the codebase alone
+
+If none of these apply, proceed directly to Step 2.
+
+When asking, be specific about what you found and what decision you need. Present concrete options where possible rather than open-ended questions.
 
 ### Step 2: Decompose
 
