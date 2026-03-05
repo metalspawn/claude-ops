@@ -1,12 +1,14 @@
 # Setting Up Your Global CLAUDE.md
 
-The `orc` plugin provides the skills and agents. Your global `~/.claude/CLAUDE.md` provides the orchestration rules that tell Claude *when* and *how* to use them.
+The `orc` plugin works out of the box — invoke any skill directly (`/orc:plan`, `/orc:execute`, etc.) and it handles the rest.
 
-Below is a recommended snippet to add to your global CLAUDE.md. Adapt it to your preferences.
+The optional CLAUDE.md setup below adds **auto-delegation**: Claude will reach for the right skill on its own instead of waiting for you to invoke it. Without it, you drive the flow manually.
 
 ---
 
-## Recommended CLAUDE.md Snippet
+## Optional: Orchestrator Role
+
+Add this to your global `~/.claude/CLAUDE.md` if you want Claude to automatically delegate to `orc` skills.
 
 ```markdown
 ## Role
@@ -70,14 +72,14 @@ The Task system is the scratchpad for orchestrating multi-agent work:
 
 ---
 
-## What This Gives You
+## What the Orchestrator Role Gives You
 
-- **Orchestrator identity** — Claude delegates instead of implementing directly
+- **Auto-delegation** — Claude chooses the right skill instead of implementing directly
 - **Decision table** — Claude knows when to suggest `/orc:plan` vs act directly
 - **Model inheritance** — prevents agents from being downgraded to cheaper models
 - **Task system context** — agents understand the coordination layer
-- **Shipping workflow** — Push, PR creation, self-review, and external feedback triage
-- **Branch management** — Automatic feature branch creation with project-specific naming
+
+Without it, the plugin still works — you just invoke skills yourself.
 
 ## What to Add Yourself
 

@@ -108,11 +108,9 @@ No new agents are needed for shipping. `/orc:ship` delegates to the built-in `/r
 claude plugin install metalspawn/claude-ops --scope user
 ```
 
-### CLAUDE.md Setup
+### Optional: CLAUDE.md Setup
 
-The plugin provides the skills and agents. Your global `~/.claude/CLAUDE.md` provides the orchestration rules. See [docs/claude-md-guide.md](docs/claude-md-guide.md) for the recommended setup.
-
-The key addition is the **orchestrator role** — without it, Claude will try to implement directly instead of delegating to agents.
+The plugin works out of the box — invoke any skill directly. Optionally, add the **orchestrator role** to your global `~/.claude/CLAUDE.md` so Claude auto-delegates to the right skill instead of implementing directly. See [docs/claude-md-guide.md](docs/claude-md-guide.md).
 
 ### Project CLAUDE.md
 
