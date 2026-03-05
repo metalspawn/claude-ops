@@ -57,8 +57,7 @@ worker (implement)
 └────┬─────┴─────┬─────┴─────┬─────┘
      │           │           │
      ▼           ▼           ▼
-  PASS/FAIL   PASS/ADV/   PASS/FAIL
-                FAIL
+  PASS/FAIL   PASS/FAIL   PASS/FAIL
 
 All PASS → commit
 Any FAIL → worker fixes → all three re-run

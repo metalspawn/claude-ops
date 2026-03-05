@@ -52,10 +52,7 @@ Spawn these agents simultaneously via parallel Task tool calls. **None is option
 **`semantic-reviewer`:**
 - Scope: **only files changed by the worker**.
 - Checks naming clarity, comment accuracy, readability.
-- Verdicts:
-  - **FAIL** — misleading names or orphaned/wrong comments. Blocks commit.
-  - **PASS WITH ADVISORIES** — improvable but not misleading. Does NOT block.
-  - **PASS** — clean.
+- Binary PASS/FAIL — if it's worth mentioning, it's worth fixing.
 
 **`validator`:**
 - Run tests (existing + any new ones), linting, type checking.
@@ -65,13 +62,13 @@ Spawn these agents simultaneously via parallel Task tool calls. **None is option
 Wait for **ALL THREE** to return before proceeding.
 
 **Handling results:**
-- **All PASS (or semantic PASS WITH ADVISORIES):** proceed to Step 4. Surface advisories before committing — do NOT put them in the commit message.
+- **All PASS:** proceed to Step 4.
 - **Any FAIL:** delegate fixes to `worker`, then re-run **ALL THREE** agents in parallel. A fix could introduce new issues in any domain. Repeat until no FAILs.
 
 ### Step 4: Commit
 You may ONLY reach this step with:
 - ✅ `code-reviewer` PASS (this cycle)
-- ✅ `semantic-reviewer` PASS or PASS WITH ADVISORIES (this cycle)
+- ✅ `semantic-reviewer` PASS (this cycle)
 - ✅ `validator` PASS (this cycle)
 - ✅ No unrelated changes staged
 
