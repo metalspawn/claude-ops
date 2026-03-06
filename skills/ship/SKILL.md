@@ -52,11 +52,16 @@ Check if a PR already exists for this branch.
 - **If no PR exists:** create one via `gh pr create`.
 
 **PR title — Conventional Commits format:**
-Derive from the branch name. Transform hyphens to spaces, extract scope from ticket references.
-- `feat/PROJ-123-add-dark-mode` → `feat(PROJ-123): add dark mode`
-- `fix/login-session-expiry` → `fix: login session expiry`
+Format: `type(scope): description` or `type: description`
+
+- **Type:** Derive from the branch name prefix (`feat/`, `fix/`, `chore/`, etc.). If unclear, default to `feat`.
+- **Scope:** A short domain or service label (e.g., `auth`, `api`, `editor`, `billing`). NOT a slug of the feature — the description already covers that. Scope MUST be a single word (`\w+`) to satisfy common PR title checkers. If the right scope isn't obvious from the branch name or task context, use `AskUserQuestion` to ask the user.
+- **Description:** Brief summary of the change in imperative mood, derived from branch name and task context.
+
+Examples:
+- `feat/PROJ-123-add-dark-mode` → `feat(ui): add dark mode` (not `feat(dark-mode): ...`)
+- `fix/login-session-expiry` → `fix(auth): resolve session expiry on login`
 - `chore/update-dependencies` → `chore: update dependencies`
-- If the branch name does not clearly indicate a type, default to `feat`.
 
 **PR body — structured format:**
 ```
