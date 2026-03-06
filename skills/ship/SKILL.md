@@ -76,7 +76,7 @@ Use a HEREDOC to pass the body to `gh pr create` for correct formatting.
 
 This step is mandatory. NEVER skip it.
 
-- Invoke the built-in `/review-pr` skill via the `Skill` tool: `skill: "review-pr"`
+- Invoke the built-in `/review` skill via the `Skill` tool: `skill: "review"`
 - The review findings are returned directly in the conversation — they are NOT posted to GitHub.
 - Parse the returned findings into structured items. Each item MUST have:
   - **file** — the file path

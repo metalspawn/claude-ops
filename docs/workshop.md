@@ -255,7 +255,7 @@ Approve when satisfied.
 **Watch for:**
 - Does the preflight catch any issues (uncommitted changes, incomplete tasks)?
 - Is the PR title derived correctly from the branch name?
-- Does the self-review (via `/review-pr`) find anything?
+- Does the self-review (via `/review`) find anything?
 - How are findings categorised (Must Address / Should Consider / Nitpick)?
 - Does the triage flow feel natural?
 
