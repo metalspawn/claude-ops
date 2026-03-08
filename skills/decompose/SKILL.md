@@ -82,5 +82,6 @@ Present the decomposition to the user. Format as:
 - NEVER invoke the plan-reviewer — the user reviews decompositions, agents review implementation plans
 - NEVER use `EnterPlanMode` / `ExitPlanMode` — they conflict with this flow
 - Each step MUST be independently shippable — tests pass, nothing broken, no "part 1 of 2" that leaves the codebase in a broken state
+- **Bias toward smaller steps.** Each step should be small enough to review efficiently — a reviewer should be able to hold the entire change in their head. Several small PRs beats one big one; the cost of splitting is low (agents handle the git mechanics) while the cost of a PR too large to review effectively is high (superficial reviews, missed issues, merge pain). When in doubt, ask the user whether to split further.
 - Steps MUST be ordered so dependencies are respected — no step may depend on a later step
 - If the feature fits in a single PR, say so and recommend `/orc:plan` directly — do not over-decompose
