@@ -15,14 +15,9 @@ Follow these steps in exact order. Each step produces output that feeds the next
 
 ### Step 1: Explore
 
-Spawn the `Explore` agent (thoroughness: medium) to understand the codebase context.
+Spawn an agent to understand the codebase context relevant to this task. Identify: affected files, dependencies, existing patterns, constraints, and anything that might affect the approach.
 
-Provide:
-- The task description above
-- Request to identify: affected files, dependencies, existing patterns, constraints
-- Request to surface anything that might affect the approach
-
-Wait for the agent to return.
+Check `.claude/rules/` for project-specific exploration tools (e.g., MCP servers for code navigation). If available, include their loading instructions in the agent's prompt.
 
 ### Step 1b: Clarify
 

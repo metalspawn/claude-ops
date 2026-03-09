@@ -103,7 +103,7 @@ if command -v direnv &>/dev/null && [[ -f "$WORKTREE_DIR/.envrc" ]]; then
 fi
 
 # Copy untracked env files from the main repo into the worktree
-for envfile in .env.local .env; do
+for envfile in .env.local .env .mcp.json; do
   if [[ -f "$envfile" && ! -f "$WORKTREE_DIR/$envfile" ]]; then
     cp "$envfile" "$WORKTREE_DIR/$envfile"
     echo "Copied $envfile into worktree."
