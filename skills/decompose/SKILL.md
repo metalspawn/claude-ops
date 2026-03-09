@@ -15,14 +15,9 @@ Follow these steps in exact order. Each step produces output that feeds the next
 
 ### Step 1: Explore
 
-Spawn the `Explore` agent (thoroughness: very thorough) to understand the codebase context.
+Spawn an agent to thoroughly understand the codebase context. Identify: affected systems, module boundaries, dependencies between components, existing patterns, integration points. Surface: what can change independently, what has coupling that forces ordering, what existing tests or contracts constrain the work.
 
-Provide:
-- The feature description above
-- Request to identify: affected systems, module boundaries, dependencies between components, existing patterns, integration points
-- Request to surface: what can change independently, what has coupling that forces ordering, what existing tests or contracts constrain the work
-
-Wait for the agent to return.
+Check `.claude/rules/` for project-specific exploration tools (e.g., MCP servers for code navigation). If available, include their loading instructions in the agent's prompt.
 
 ### Step 1b: Clarify
 
