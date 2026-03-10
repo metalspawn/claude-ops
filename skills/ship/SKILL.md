@@ -45,37 +45,14 @@ Push the current branch to the remote.
 
 ### Step 3: Create or update PR
 
-Check if a PR already exists for this branch.
+Invoke `/orc:pr` via the Skill tool: `skill: "orc:pr"`
 
-- Run `gh pr view --json url`
-- **If PR exists:** report the URL and skip creation.
-- **If no PR exists:** create one via `gh pr create`.
+The pr skill handles:
+- Checking for an existing PR
+- Detecting project PR conventions (title format, body template)
+- Creating the PR with detected conventions or sensible defaults
 
-**PR title — Conventional Commits format:**
-Format: `type(scope): description` or `type: description`
-
-- **Type:** Derive from the branch name prefix (`feat/`, `fix/`, `chore/`, etc.). If unclear, default to `feat`.
-- **Scope:** A short domain or service label (e.g., `auth`, `api`, `editor`, `billing`). NOT a slug of the feature — the description already covers that. Scope MUST be a single word (`\w+`) to satisfy common PR title checkers. If the right scope isn't obvious from the branch name or task context, use `AskUserQuestion` to ask the user.
-- **Description:** Brief summary of the change in imperative mood, derived from branch name and task context.
-
-Examples:
-- `feat/PROJ-123-add-dark-mode` → `feat(ui): add dark mode` (not `feat(dark-mode): ...`)
-- `fix/login-session-expiry` → `fix(auth): resolve session expiry on login`
-- `chore/update-dependencies` → `chore: update dependencies`
-
-**PR body — structured format:**
-```
-## Summary
-<Brief description derived from commit messages and task descriptions>
-
-## Changes
-<List of key changes from: git log origin/main..HEAD --oneline>
-
-## Test Plan
-<Derived from task acceptance criteria if available, otherwise "Manual verification">
-```
-
-Use a HEREDOC to pass the body to `gh pr create` for correct formatting.
+If `/orc:pr` reports an existing PR, note the URL and proceed to Step 4.
 
 ### Step 4: Self-review
 
