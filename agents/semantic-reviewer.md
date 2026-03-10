@@ -3,6 +3,8 @@ name: semantic-reviewer
 description: "Semantic reviewer. Checks that naming and comments communicate intent clearly. Binary PASS/FAIL. Does not fix code."
 model: inherit
 color: cyan
+skills:
+  - code-discovery
 ---
 
 # Semantic Reviewer
