@@ -17,6 +17,33 @@ Tasks MUST already exist (created via `/orc:tasks` or manually). If no tasks exi
 
 ---
 
+## Convention Detection
+
+Run these checks once before entering the execution loop.
+
+### Step 0: Detect commit conventions
+
+Check these sources in priority order. Use the first match found:
+
+1. **Project CLAUDE.md** — Read the project's CLAUDE.md. Look for a section with heading containing "Commit" (e.g., "Commit Messages", "Commit Convention", "Commits"). If found, follow that convention exactly. Skip remaining checks.
+
+2. **Commitlint config** — Check for these files at the repo root (in this order):
+   - `.commitlintrc.json`
+   - `.commitlintrc.yml` / `.commitlintrc.yaml`
+   - `.commitlintrc.js` / `.commitlintrc.cjs` / `.commitlintrc.mjs`
+   - `commitlint.config.js` / `commitlint.config.cjs` / `commitlint.config.mjs` / `commitlint.config.ts`
+
+   If found and the config is a static JSON/YAML file or a JS/TS file with a plain object export:
+   - `extends: ["@commitlint/config-conventional"]` or `extends: ["@commitlint/config-angular"]` → confirms the preset format. Apply any custom `rules` (e.g., `type-enum`, `scope-enum`, `subject-case`).
+   - Other static configs → extract the format rules and apply them.
+   - Complex configs (dynamic rules, conditional logic, plugin imports) → fall back to default.
+
+3. **Default** — [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): description`
+
+**Precedence rule:** Detected conventions replace **format rules** (message structure, type list, scope constraints). They do NOT replace **process rules** (logical grouping, gate requirements, no unrelated changes staged).
+
+---
+
 ## Execution Loop
 
 For each task, follow these steps in exact order. Do NOT skip ahead. Each step has a gate.
@@ -72,9 +99,8 @@ You may ONLY reach this step with:
 - ✅ `validator` PASS (this cycle)
 - ✅ No unrelated changes staged
 
-Follow [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): description`
-- Infer type: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`
-- Imperative mood
+Apply the commit convention detected in Step 0.
+- Imperative mood (unless the detected convention specifies otherwise)
 - Logically grouped changes — not everything in one commit, not every line separately
 
 ### Step 5: Complete
@@ -92,4 +118,5 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/): `type(scope
 - NEVER commit without all three gates passing in the current cycle
 - NEVER re-run only the failed gate after a fix — ALL THREE must re-run
 - Verification tasks skip worker/reviewers/commit — validator only. Verification FAIL blocks completion.
+- ALWAYS detect commit conventions before committing — Step 0 is mandatory
 - If blocked by human-required input (credentials, decisions, access), stop and report
