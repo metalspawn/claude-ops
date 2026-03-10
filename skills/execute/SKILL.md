@@ -62,6 +62,7 @@ If the task has `metadata.type === "verification"`, skip the main loop (Step 2 I
 - **FAIL** → report failing scenarios. Spawn `worker` to fix the failing areas. Re-run validator. Repeat until PASS.
 
 ### Step 2: Implement — delegate to `worker`
+- Check if `.claude/rules/` exists. If it does, read all files in it — their content must be included in the worker's prompt as project context. Rules files are NOT inherited by subagents; if you don't forward them, the worker won't have them.
 - Spawn the `worker` agent with the task description, acceptance criteria, and file paths.
 - NEVER edit implementation files yourself. NEVER substitute with direct tool calls.
 - Wait for the worker to return.

@@ -15,9 +15,9 @@ Follow these steps in exact order. Each step produces output that feeds the next
 
 ### Step 1: Explore
 
-Spawn an agent to understand the codebase context relevant to this task. Identify: affected files, dependencies, existing patterns, constraints, and anything that might affect the approach.
+Check if `.claude/rules/` exists. If it does, read all files in it — their content must be included in the agent's prompt as project context. Rules files are NOT inherited by subagents; if you don't forward them, the agent won't have them.
 
-Check `.claude/rules/` for project-specific exploration tools (e.g., MCP servers for code navigation). If available, include their loading instructions in the agent's prompt.
+Spawn an agent to understand the codebase context relevant to this task. Identify: affected files, dependencies, existing patterns, constraints, and anything that might affect the approach.
 
 ### Step 1b: Clarify
 
