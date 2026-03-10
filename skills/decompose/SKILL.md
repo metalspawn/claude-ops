@@ -15,8 +15,6 @@ Follow these steps in exact order. Each step produces output that feeds the next
 
 ### Step 1: Explore
 
-Check if `.claude/rules/` exists. If it does, read all files in it — their content must be included in the agent's prompt as project context. Rules files are NOT inherited by subagents; if you don't forward them, the agent won't have them.
-
 Spawn an agent to thoroughly understand the codebase context. Identify: affected systems, module boundaries, dependencies between components, existing patterns, integration points. Surface: what can change independently, what has coupling that forces ordering, what existing tests or contracts constrain the work.
 
 ### Step 1b: Clarify
