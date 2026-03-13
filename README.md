@@ -15,7 +15,7 @@ A Claude Code plugin that provides structured, multi-agent workflows for non-tri
                                                     /orc:pull-comments → triage → /orc:plan or /orc:execute → /orc:ship
 ```
 
-Seven skills. Five specialised agents.
+Eight skills. Five specialised agents.
 
 | Phase | Skill | What happens |
 |-------|-------|-------------|
@@ -25,6 +25,7 @@ Seven skills. Five specialised agents.
 | **Tasks** | `/orc:tasks` | Branch setup → create tasks with acceptance criteria from the plan |
 | **Execute** | `/orc:execute` | For each task: worker implements → three parallel review gates → commit |
 | **Ship** | `/orc:ship` | Push → create/update PR → self-review → triage findings |
+| **PR** | `/orc:pr` | Create or update a PR with project convention detection (invoked by `/orc:ship` or directly) |
 | **Review** | `/orc:pull-comments` | Fetch external PR comments → categorise → triage → route to next step |
 
 For simple, direct tasks: `/orc:execute <task>` skips planning and creates a single task inline.
