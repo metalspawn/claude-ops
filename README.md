@@ -5,14 +5,23 @@ A Claude Code plugin that provides structured, multi-agent workflows for non-tri
 ## The Flow
 
 ```
+Multi-PR feature:
+/orc:decompose → approve → then per step ↓
+
+Single PR:
 /orc:plan → approve → /orc:tasks → confirm → /orc:execute → /orc:ship
-                          │                                      │
-                   creates branch                     push → PR → self-review → triage
-                   (if needed)                               │
-                                                    findings? → /orc:plan or /orc:execute → /orc:ship
-                                                    clean? → ready for human review
-                                                             │
-                                                    /orc:pull-comments → triage → /orc:plan or /orc:execute → /orc:ship
+                          │                       │               │
+                   creates branch          worker → review    push → PR → self-review
+                   (if needed)             gates → commit          │
+                                                            findings? → fix → /orc:ship
+                                                            clean? → ready for human review
+                                                                       │
+                                                              /orc:pull-comments
+                                                                       │
+                                                              triage → fix → /orc:ship
+
+Direct task:
+/orc:execute <task> → review gates → commit → /orc:ship
 ```
 
 Eight skills. Five specialised agents.
