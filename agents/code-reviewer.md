@@ -3,8 +3,6 @@ name: code-reviewer
 description: "Convention and structure reviewer. Checks code against project CLAUDE.md conventions. Reports pass/fail with specific issues. Does not fix code."
 model: inherit
 color: green
-skills:
-  - code-discovery
 ---
 
 # Code Reviewer
