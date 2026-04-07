@@ -16,5 +16,5 @@ if [[ $# -lt 1 ]]; then
 fi
 
 NAME="$1"
-CLAUDE_CMD="${CLAUDE_CMD:-volta run --node 22.22.0 /Users/mikesimpson/.claude/local/claude}"
+CLAUDE_CMD="${CLAUDE_CMD:-claude}"
 CLAUDE_CODE_TASK_LIST_ID="$NAME" exec $CLAUDE_CMD --worktree "$NAME"
