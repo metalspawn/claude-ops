@@ -1,115 +1,20 @@
 #!/bin/bash
 set -euo pipefail
 
-usage() {
-  echo "Usage: new-claude-session <name> [base-branch]"
-  echo "       new-claude-session --remove <name>"
-  echo "       new-claude-session --list"
+if [[ $# -lt 1 ]]; then
+  echo "Usage: new-claude-session <name>"
   echo ""
-  echo "Creates a git worktree and starts Claude with a persistent task list."
+  echo "Launches Claude with --worktree, which creates or resumes a worktree"
+  echo "at .claude/worktrees/<name>/. Task list persists across sessions."
   echo ""
-  echo "  name          Worktree and branch name (also used as task list ID)"
-  echo "  base-branch   Branch to base off (default: HEAD)"
-  echo "  --remove      Remove worktree and delete its branch"
-  echo "  --list        List active worktrees for this repo"
+  echo "  name    Worktree name (also used as task list ID)"
+  echo ""
+  echo "Worktree management:"
+  echo "  git worktree list              List active worktrees"
+  echo "  git worktree remove <path>     Remove a worktree"
   exit 1
-}
-
-[[ $# -lt 1 ]] && usage
-
-REPO_NAME="$(basename "$(pwd)")"
-WORKTREES_DIR="../${REPO_NAME}-worktrees"
-
-# --list: show active worktrees
-if [[ "$1" == "--list" ]]; then
-  if [[ ! -d "$WORKTREES_DIR" ]]; then
-    echo "No worktrees found for $REPO_NAME."
-    exit 0
-  fi
-  for dir in "$WORKTREES_DIR"/*/; do
-    [[ -d "$dir" ]] || continue
-    name="$(basename "$dir")"
-    echo "$name"
-  done
-  exit 0
 fi
 
-# --remove: clean up worktree and branch
-if [[ "$1" == "--remove" ]]; then
-  [[ $# -lt 2 ]] && { echo "Error: --remove requires a worktree name."; usage; }
-  NAME="$2"
-  WORKTREE_DIR="$WORKTREES_DIR/$NAME"
-
-  if [[ ! -d "$WORKTREE_DIR" ]]; then
-    echo "Error: Worktree '$NAME' not found at $WORKTREE_DIR"
-    exit 1
-  fi
-
-  git worktree remove "$WORKTREE_DIR" --force
-  echo "Removed worktree '$NAME'."
-
-  # Delete the branch if it still exists and is fully merged
-  if git rev-parse --verify "$NAME" &>/dev/null; then
-    if git branch -d "$NAME" 2>/dev/null; then
-      echo "Deleted branch '$NAME' (was fully merged)."
-    else
-      echo "Branch '$NAME' is not fully merged. Delete with: git branch -D $NAME"
-    fi
-  fi
-
-  # Remove worktrees dir if empty
-  rmdir "$WORKTREES_DIR" 2>/dev/null || true
-
-  exit 0
-fi
-
-# Default: create/resume worktree
 NAME="$1"
-BASE="${2:-HEAD}"
-WORKTREE_DIR="$WORKTREES_DIR/$NAME"
-
-if [[ -d "$WORKTREE_DIR" ]]; then
-  echo "Worktree '$NAME' already exists. Resuming session."
-else
-  mkdir -p "$WORKTREES_DIR"
-  git worktree add "$WORKTREE_DIR" -b "$NAME" "$BASE"
-fi
-
-# Sync draft instructions into the worktree
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-SYNC="$SCRIPT_DIR/sync-instructions"
-if [[ -x "$SYNC" ]]; then
-  # Detect project from repo remote or directory name
-  PROJECT=""
-  REPO_DIR="$(cd "$WORKTREE_DIR" && git rev-parse --show-toplevel 2>/dev/null || echo "")"
-  for draft_dir in "$SCRIPT_DIR/../drafts"/*/; do
-    draft_name="$(basename "$draft_dir")"
-    [[ "$draft_name" == "templates" ]] && continue
-    # Match if repo path contains the project name
-    if [[ -n "$REPO_DIR" && "$REPO_DIR" == *"$draft_name"* ]]; then
-      PROJECT="$draft_name"
-      break
-    fi
-  done
-  if [[ -n "$PROJECT" ]]; then
-    echo "Syncing $PROJECT instructions..."
-    "$SYNC" "$PROJECT" "$WORKTREE_DIR"
-  fi
-fi
-
-# Auto-allow direnv if .envrc exists in the worktree
-if command -v direnv &>/dev/null && [[ -f "$WORKTREE_DIR/.envrc" ]]; then
-  direnv allow "$WORKTREE_DIR"
-fi
-
-# Copy untracked env files from the main repo into the worktree
-for envfile in .env.local .env .mcp.json; do
-  if [[ -f "$envfile" && ! -f "$WORKTREE_DIR/$envfile" ]]; then
-    cp "$envfile" "$WORKTREE_DIR/$envfile"
-    echo "Copied $envfile into worktree."
-  fi
-done
-
 CLAUDE_CMD="${CLAUDE_CMD:-volta run --node 22.22.0 /Users/mikesimpson/.claude/local/claude}"
-cd "$WORKTREE_DIR"
-CLAUDE_CODE_TASK_LIST_ID="$NAME" exec $CLAUDE_CMD
+CLAUDE_CODE_TASK_LIST_ID="$NAME" exec $CLAUDE_CMD --worktree "$NAME"
