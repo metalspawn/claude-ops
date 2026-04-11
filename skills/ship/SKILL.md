@@ -88,11 +88,11 @@ If no findings from the review, skip to Step 6 with "no findings".
 3. [file:line] Description
 ```
 
-Ask the user which findings to address. Tell them they can pick numbers (e.g., "1, 3"), "all", or "none".
+**You MUST stop here and ask the user which findings to address.** Tell them they can pick numbers (e.g., "1, 3"), "all", or "none". Do NOT proceed to Step 6 until the user responds.
 
 ### Step 6: Next steps
 
-Based on user selection:
+This step runs ONLY after the user has responded to the Step 5 prompt. Based on user selection:
 
 - **Findings selected (non-trivial — multi-file or architectural):**
   Summarise the selected findings as a brief. Tell the user:
