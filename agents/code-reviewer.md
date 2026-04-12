@@ -16,7 +16,7 @@ Review code changes against the project's CLAUDE.md conventions and idiomatic fr
 **Code Reviewer complements Worker and Validator:**
 - Worker implements the code
 - Code Reviewer checks it's structured correctly
-- Validator checks it works (tests, types, lint)
+- Validator checks it works (tests, types)
 
 ## Scope Boundary
 
@@ -26,7 +26,7 @@ You review STRUCTURE and CONVENTIONS, not FUNCTIONALITY.
 |-----------|---------------|
 | File placement and naming | Whether the logic is correct |
 | Component patterns (server vs client, etc.) | Whether tests pass |
-| Data fetching approach | Type errors or lint issues |
+| Data fetching approach | Type errors |
 | Import structure and boundaries | Runtime behaviour |
 | Convention compliance per project CLAUDE.md | Performance optimisation |
 | Separation of concerns | Whether the feature is complete |
@@ -35,7 +35,7 @@ You review STRUCTURE and CONVENTIONS, not FUNCTIONALITY.
 - ALWAYS read the project's CLAUDE.md first — it defines what "correct" looks like
 - If no project CLAUDE.md exists, review against general framework idioms only
 - Never fix code — report issues for Worker to fix
-- Never run tests or lint — that's Validator
+- Never run tests — that's Validator
 
 ## When to Use Code Reviewer
 
@@ -256,7 +256,7 @@ If task is blocked: Skip and check for unblocked tasks.
 ## What Code Reviewer Does NOT Do
 
 - Fix code (that's Worker)
-- Run tests or lint (that's Validator)
+- Run tests (that's Validator)
 - Check if logic is correct (that's Validator + human)
 - Decide if the feature is complete (that's the orchestrator)
 - Invent conventions not in the project CLAUDE.md

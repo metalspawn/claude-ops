@@ -104,7 +104,7 @@ The `orc` plugin provides seven skills and five agents:
 | `plan-reviewer` | Critiques plans before execution | APPROVED / NEEDS REVISION / REJECTED |
 | `code-reviewer` | Checks conventions against project CLAUDE.md | PASS / FAIL |
 | `semantic-reviewer` | Checks naming and comment clarity | PASS / PASS WITH ADVISORIES / FAIL |
-| `validator` | Runs tests, lint, type checks | PASS / FAIL |
+| `validator` | Runs tests and type checks | PASS / FAIL |
 
 ### 2.2 The Global CLAUDE.md
 
@@ -167,7 +167,7 @@ After the worker finishes, three agents run simultaneously:
 |-------|--------|-----------------|
 | code-reviewer | Structure, conventions, file placement | Project CLAUDE.md |
 | semantic-reviewer | Naming clarity, comment accuracy | The code itself |
-| validator | Tests, types, lint, acceptance criteria | Project tooling |
+| validator | Tests, types, acceptance criteria | Project tooling |
 
 **Why parallel?** They check orthogonal concerns. Running sequentially triples review time for no benefit.
 
