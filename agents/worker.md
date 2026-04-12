@@ -72,6 +72,32 @@ YES - all requested functionality implemented
 4. **Validate locally if possible** - Run quick checks before reporting done
 5. **Report what changed** - Be specific about files and modifications
 
+## Naming and Clarity Standards
+
+These are not optional. Apply them as you write code — not as a separate review step.
+
+### Function and Method Names
+- Describe what the function does or returns, not how
+- Use verbs for side effects (`createUser`, `deleteSession`), noun phrases for accessors (`isActive`, `userName`)
+- A reader should predict the function's behaviour from its name alone
+- If a name needs a comment to explain it, the name is wrong
+
+### Variable and Constant Names
+- Reflect domain meaning, not type (`userCount` not `num`, `isAuthenticated` not `flag`)
+- Booleans read as true/false statements (`isLoading`, `hasError`, `canEdit`)
+- Collections are plural (`users`, `selectedItems`)
+- No abbreviations unless universally understood (`id`, `url`, `api` are fine; `usr`, `msg`, `btn` are not)
+
+### Comments
+- Explain **why**, never **what** — the code explains what
+- Remove comments that restate the code (`// increment counter` above `counter++`)
+- Complex business logic, non-obvious workarounds, and "why not the obvious approach" earn comments
+- Never leave orphaned comments that reference removed or changed code
+
+### Naming Consistency
+- Match existing patterns in the codebase (`create/delete` not `add/remove` if that's what the project uses)
+- If the project CLAUDE.md defines domain terms, use them
+
 ## Task System Integration (Optional)
 
 If assigned via owner field in a task workflow:

@@ -19,12 +19,6 @@ Read the approved plan and create tasks using `TaskCreate`. Each task MUST inclu
   1. **What to change** — Specific description of the implementation work
   2. **Where** — File paths that will be created or modified, referencing existing files by their full path
   3. **Why** — Context from the plan explaining the purpose of this change
-  4. **Acceptance criteria** — Explicit, verifiable conditions that define "done". Each criterion should be a concrete check, not a vague statement. Examples:
-     - "The `useAuth` hook returns `{ user, isLoading, error }` matching the `AuthState` type"
-     - "Clicking the logout button calls `authAPI.logout()` and redirects to `/login`"
-     - "Tests pass for both authenticated and unauthenticated states"
-     - NOT "Authentication works correctly" (too vague)
-     - NOT "Code is clean" (not verifiable)
 
 ## Process
 
@@ -39,12 +33,12 @@ Read the approved plan and create tasks using `TaskCreate`. Each task MUST inclu
    - `blockedBy` all implementation tasks
    - Description contains the verification scenarios from the plan verbatim — these ARE the acceptance criteria (do not add separate acceptance criteria)
    - activeForm: present continuous matching the subject (e.g., "Verifying authentication behaviour")
-7. Present the created task list to the user for confirmation before execution begins
+7. Present the created task list — show the task subjects, dependencies, and key acceptance criteria for visibility
 
 ## Rules
 
-- Every task MUST have acceptance criteria — no exceptions
+- Do NOT include lint or format checks (rubocop, eslint, prettier, etc.) in task descriptions — these are infrastructure concerns handled by pre-commit hooks
 - Reference specific file paths from the plan, not vague descriptions
 - Tasks should be ordered so that foundational work (types, utilities, API layers) comes before dependent work (UI components, integration)
 - The verification task MUST be the last task created, blocked by all implementation tasks
-- Do NOT begin executing tasks — only create them. Execution starts with `/orc:execute` after the user confirms.
+- Do NOT begin executing tasks — only create them. The orchestrator handles continuation to `/orc:execute`.

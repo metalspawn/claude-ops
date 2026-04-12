@@ -88,7 +88,7 @@ If no findings from the review, skip to Step 7 with "no findings".
 3. [file:line] Description
 ```
 
-**You MUST stop here and ask the user which findings to address.** Tell them they can pick numbers (e.g., "1, 3"), "all", or "none". Do NOT proceed until the user responds.
+**Default: address all findings.** Present the numbered list, then proceed to address all of them unless the user has already specified a different selection (e.g., "none", specific numbers). The user can intervene to course-correct at any point.
 
 ### Step 6: Watch CI
 
@@ -125,15 +125,13 @@ gh run view <id> --log-failed
 
 ### Step 7: Next steps
 
-This step runs ONLY after triage (Step 5) and CI (Step 6) are resolved. Based on user selection from Step 5:
+This step runs ONLY after triage (Step 5) and CI (Step 6) are resolved. Based on the findings selection:
 
 - **Findings selected (non-trivial — multi-file or architectural):**
-  Summarise the selected findings as a brief. Tell the user:
-  "Run `/orc:plan` to plan the changes, then `/orc:tasks` → `/orc:execute` → `/orc:ship`."
+  Summarise the selected findings as a brief, then invoke `/orc:plan` to plan the changes. The orchestrator continues the full pipeline from there.
 
 - **Findings selected (trivial — single-file, obvious fix):**
-  Summarise the selected findings. Tell the user:
-  "Run `/orc:execute <description>` to address directly, then `/orc:ship`."
+  Summarise the selected findings, then invoke `/orc:execute <description>` to address directly. After execution completes, re-invoke `/orc:ship` to push, re-review, and check CI.
 
 - **No findings or "none" selected:**
   "PR is ready for human review." Report the PR URL.
