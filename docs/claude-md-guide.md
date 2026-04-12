@@ -89,6 +89,53 @@ The snippet above is workflow-only. You'll want to add your own:
 - **Communication preferences** — language, tone, directness rules
 - **Project-specific conventions** — these belong in per-project CLAUDE.md files, not global
 
+## Pre-Commit Hooks for Lint & Format
+
+Linting and formatting are deterministic and mechanical — they should run as pre-commit hooks with auto-fix, not as agent validation. This keeps agent cycles focused on tests and type checks (which require reasoning), and prevents expensive re-runs of all review gates for trivial lint fixes.
+
+Pre-commit hooks also solve an agent-boundary problem: hooks configured in the parent session don't fire for tool calls made by subagents, but pre-commit hooks fire on every `git commit` regardless.
+
+### Recommended Setup
+
+Use a hook manager. Two good options:
+
+| Tool | Config file | Install |
+|------|------------|---------|
+| [Lefthook](https://github.com/evilmartians/lefthook) | `lefthook.yml` | `brew install lefthook && lefthook install` |
+| [Husky](https://typicode.github.io/husky/) | `.husky/pre-commit` | `npx husky init` |
+
+### Example: lefthook.yml
+
+```yaml
+pre-commit:
+  commands:
+    lint-fix:
+      glob: "*.{js,jsx,ts,tsx}"
+      run: npx eslint --fix {staged_files} && git add {staged_files}
+    format:
+      glob: "*.{js,jsx,ts,tsx,json,css,md}"
+      run: npx prettier --write {staged_files} && git add {staged_files}
+```
+
+### Common Auto-Fix Commands
+
+| Language | Lint | Format |
+|----------|------|--------|
+| JS/TS | `eslint --fix` | `prettier --write` |
+| Python | `ruff check --fix` | `ruff format` |
+| Ruby | `rubocop -A` | `rubocop -A` (combined) |
+| Go | `golangci-lint run --fix` | `gofmt -w` |
+
+### What Happens Without Hooks
+
+Without pre-commit hooks, lint and format issues will **not** be caught by the agent workflow. The validator agent does not run linters — it focuses on tests and type checks. Lint issues will only surface during human PR review or CI checks.
+
+This is a deliberate trade-off: lint enforcement is an infrastructure concern, not an agent concern. If your project doesn't have pre-commit hooks or CI lint checks, add them.
+
+### How Auto-Fix Works
+
+Auto-fix means the hook fixes problems silently on commit. The agent never sees lint failures because they are resolved before the commit lands. If a lint rule cannot auto-fix (e.g., unused variable), it surfaces as a commit failure that the worker must address — but this is rare and fast compared to running a full validation gate.
+
 ## Branch Naming Conventions
 
 The `/orc:branch` skill checks your project's CLAUDE.md for a "Branch" or "Branch Naming" section. If found, it follows that convention exactly. If not, it falls back to defaults: `<type>/<ticket>-<slug>`.
