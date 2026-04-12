@@ -82,7 +82,7 @@ Spawn these agents simultaneously via parallel Task tool calls. **None is option
 - Binary PASS/FAIL — if it's worth mentioning, it's worth fixing.
 
 **`validator`:**
-- Run tests (existing + any new ones), linting, type checking.
+- Run tests (existing + any new ones) and type checking.
 - Confirm acceptance criteria from the task are met.
 - Return explicit pass/fail.
 
