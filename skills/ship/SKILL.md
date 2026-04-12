@@ -13,7 +13,7 @@ $ARGUMENTS
 
 ## Process
 
-Follow these steps in exact order. Do NOT skip ahead. Steps 1–3 are run directly by the orchestrator via Bash/tool calls.
+Follow these steps in exact order. Do NOT skip ahead. Steps 1–3 are run directly by the orchestrator via Bash/tool calls. Steps 4–7 handle review, triage, CI, and next steps.
 
 ### Step 1: Preflight
 
@@ -67,7 +67,7 @@ This step is mandatory. NEVER skip it.
 
 ### Step 5: Triage findings
 
-If no findings from the review, skip to Step 6 with "no findings".
+If no findings from the review, skip to Step 7 with "no findings".
 
 **Classify each finding into one of three severity tiers:**
 
@@ -88,11 +88,44 @@ If no findings from the review, skip to Step 6 with "no findings".
 3. [file:line] Description
 ```
 
-**You MUST stop here and ask the user which findings to address.** Tell them they can pick numbers (e.g., "1, 3"), "all", or "none". Do NOT proceed to Step 6 until the user responds.
+**You MUST stop here and ask the user which findings to address.** Tell them they can pick numbers (e.g., "1, 3"), "all", or "none". Do NOT proceed until the user responds.
 
-### Step 6: Next steps
+### Step 6: Watch CI
 
-This step runs ONLY after the user has responded to the Step 5 prompt. Based on user selection:
+After triage is resolved, check whether CI is running on the branch.
+
+**Find the CI run:**
+```bash
+gh run list --branch $(git branch --show-current) --limit 1 --json databaseId,status,conclusion,name
+```
+
+- If no runs found: skip with "No CI workflows detected for this branch." Proceed to Step 7.
+- If the run is already completed with success: report "CI passed" and proceed to Step 7.
+- If the run is already completed with failure: go to the failure diagnosis below.
+- If the run is in progress or queued: watch it:
+
+```bash
+gh run watch <id> --exit-status
+```
+
+**On success:** report "CI passed ✓" and proceed to Step 7.
+
+**On failure:** diagnose immediately.
+
+1. Get the failed logs:
+```bash
+gh run view <id> --log-failed
+```
+
+2. Read the error output and diagnose the root cause.
+3. Present the diagnosis to the user and recommend next steps:
+   - Trivial fix (config, typo, missing env var): "Run `/orc:execute <description>` to fix, then `/orc:ship`."
+   - Non-trivial fix (logic error, test failure, dependency issue): "Run `/orc:plan` to plan the fix, then `/orc:tasks` → `/orc:execute` → `/orc:ship`."
+4. **You MUST stop here and wait for the user to decide.** Do NOT proceed to Step 7 after a CI failure.
+
+### Step 7: Next steps
+
+This step runs ONLY after triage (Step 5) and CI (Step 6) are resolved. Based on user selection from Step 5:
 
 - **Findings selected (non-trivial — multi-file or architectural):**
   Summarise the selected findings as a brief. Tell the user:
