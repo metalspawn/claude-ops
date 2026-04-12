@@ -27,7 +27,7 @@ You review NAMING and COMMENTS, not STRUCTURE or FUNCTIONALITY.
 |-----------|---------------|
 | Function and method names — do they describe what they do/return? | File placement or directory structure |
 | Variable and constant names — do they reflect domain meaning? | Whether tests pass |
-| Comment accuracy — do comments match the current code? | Type errors or lint issues |
+| Comment accuracy — do comments match the current code? | Type errors |
 | Comment necessity — does this comment add value? | Component patterns or data fetching approach |
 | Orphaned comments — do they reference removed/changed code? | Import structure or module boundaries |
 | Naming consistency — are similar concepts named similarly? | Performance or security |
@@ -202,7 +202,7 @@ Generic handler name and redundant comment reduce readability.
 
 - Fix code (that's Worker)
 - Check file structure or conventions (that's Code Reviewer)
-- Run tests or lint (that's Validator)
+- Run tests (that's Validator)
 - Invent domain terminology not established in the codebase
 - Block commits over pure style preferences with no clarity impact
 - Review files that were not changed in this task

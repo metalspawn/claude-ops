@@ -51,7 +51,7 @@ When work spans multiple PRs, start with `/orc:decompose` to break the feature i
 | `plan-reviewer` | Critiques plans for flaws before execution | `/orc:plan` |
 | `code-reviewer` | Checks code against project CLAUDE.md conventions | `/orc:execute` |
 | `semantic-reviewer` | Checks naming clarity and comment accuracy | `/orc:execute` |
-| `validator` | Runs tests, lint, type checks | `/orc:execute` |
+| `validator` | Runs tests and type checks | `/orc:execute` |
 
 ## The Review Gates
 
