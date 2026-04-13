@@ -13,7 +13,7 @@ $ARGUMENTS
 
 ## Process
 
-The orchestrator runs this directly — no agent delegation. Run all four checks, present a summary, then offer to fix what's missing.
+The orchestrator runs this directly — no agent delegation. Run all checks, present a summary, then offer to fix what's missing.
 
 ### Step 1: Preflight
 
@@ -61,7 +61,46 @@ Check for a hook manager (first match wins):
 
 Record: manager name (or "none"), wired (yes/no).
 
-### Step 5: Audit CLAUDE.md
+### Step 5: Local dev readiness
+
+Two layers: can we find the commands, and do they work?
+
+**Detect stack and commands:**
+
+| Files Present | Stack | Test Command | Build/Type Check |
+|---|---|---|---|
+| `package.json` | Node/JS/TS | `scripts.test` value | `scripts.typecheck` or `scripts.build` value |
+| `Gemfile` | Ruby/Rails | `bundle exec rails test` or `bundle exec rspec` | N/A |
+| `pyproject.toml` / `setup.cfg` | Python | `pytest` or `python -m pytest` | `mypy .` or `pyright` |
+| `go.mod` | Go | `go test ./...` | `go vet ./...` |
+| `Cargo.toml` | Rust | `cargo test` | `cargo check` |
+| `Makefile` | Generic | `make test` (if target exists) | `make build` (if target exists) |
+
+If `package.json` exists, read `scripts` to find exact commands. For other stacks, use the conventional commands.
+
+**Check dependencies installed:**
+- Node: `node_modules/` exists
+- Ruby: `vendor/bundle/` exists or `bundle check` succeeds
+- Python: `.venv/` or `venv/` exists, or `pip check` succeeds
+- Go: `go.sum` exists (modules downloaded on demand)
+- Rust: `target/` exists or dependencies download on build
+
+**Check environment:**
+- Look for `.env`, `.env.local`, `.env.development`, or similar at repo root
+- If none found, check if `.env.example` or `.env.sample` exists (template but not populated)
+
+**Run smoke checks** (only if dependencies are installed):
+- Run the detected test command. Record: passes, fails, or errors (e.g., missing DB, missing env var).
+- Run the detected build/type check command. Record: passes or fails.
+- If either fails, capture the first error line for the report.
+
+**Check visual verification:**
+- Check if `mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot` tool is available.
+- If available and a dev server command is detected (e.g., `scripts.dev` in package.json, `bin/rails server`): note that visual verification is possible.
+
+Record: stack, test command + result, build command + result, dependencies installed (yes/no), env file (yes/no/template only), visual verification (available/not available).
+
+### Step 6: Audit CLAUDE.md
 
 Read the project's `CLAUDE.md` at the repo root. If it does not exist, record all three sections as missing.
 
@@ -72,7 +111,7 @@ If it exists, scan headings (case-insensitive) for:
 
 Record: file exists (yes/no), which sections are present.
 
-### Step 6: Present summary
+### Step 7: Present summary
 
 Format as a checklist:
 
@@ -89,6 +128,14 @@ Format as a checklist:
 ### Pre-commit Hooks
 [✓/✗] [manager + "wired" or "no pre-commit hooks found"]
 
+### Local Dev Readiness
+Stack: [detected stack]
+[✓/✗] Dependencies installed
+[✓/✗] Tests: [command] — [pass/fail/error summary]
+[✓/✗] Build/Types: [command] — [pass/fail/error summary]
+[✓/✗] Environment: [.env found / .env.example only / none]
+[✓/✗] Visual verification: [available / not available]
+
 ### CLAUDE.md
 [✓/✗] Branch Naming section
 [✓/✗] Commit Messages section
@@ -97,21 +144,21 @@ Format as a checklist:
 
 If everything passes: "All checks passed — project is fully configured for orc workflows." STOP.
 
-### Step 7: Offer remediation
+### Step 8: Offer remediation
 
 Number each missing item. Use `AskUserQuestion`:
 "Would you like to set up the missing items? (all / comma-separated numbers / none)"
 
 If "none": "No changes made." STOP.
 
-### Step 8: Remediate
+### Step 9: Remediate
 
 For each selected item:
 
 **Missing CLAUDE.md sections:**
 - If CLAUDE.md does not exist, create it with all missing sections.
 - If it exists, append the missing sections.
-- Populate from detected conventions (Steps 2-4). If no convention was detected, use defaults.
+- Populate from detected conventions (Steps 2-5). If no convention was detected, use defaults.
 - Show the user what will be added before writing. Ask for confirmation.
 
 Section templates:
@@ -136,6 +183,13 @@ Pull Requests (populated from detection, or default):
 - Title: `type(scope): description` matching commit convention
 - Scope: single-word domain label (e.g., auth, api, editor)
 ```
+
+**Local dev issues:**
+- Dependencies not installed: print the install command for the detected stack (e.g., `npm install`, `bundle install`, `pip install -e .`)
+- Tests failing: report the first error. If it's a missing env var or service, flag it specifically.
+- No env file but `.env.example` exists: "Copy `.env.example` to `.env` and populate the values."
+- No env file at all: "No environment file found. Check if the project needs one."
+- Visual verification not available: "Add Chrome DevTools MCP server to your Claude Code configuration for screenshot-based verification."
 
 **Missing tooling (commit convention, PR template, pre-commit hooks):**
 Do NOT create config files. Print specific setup recommendations:

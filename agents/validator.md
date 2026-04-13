@@ -11,7 +11,7 @@ Quality assurance agent for checking work.
 
 ## Purpose
 
-Run validation checks and report results. Tests and type checks. Report what passed, what failed, and specific errors. Lint and formatting are infrastructure concerns — they belong in pre-commit hooks with auto-fix, not in agent validation.
+Run validation checks and report results. Tests and type checks. Report what passed, what failed, and specific errors.
 
 ## Input
 
@@ -139,8 +139,6 @@ If no test runner or test script is found, report "No test configuration found" 
 
 1. **Type/Compile errors** - Code won't run
 2. **Test failures** - Logic is broken
-
-Lint and format are not validation concerns. They should be enforced by pre-commit hooks with auto-fix.
 
 ## Partial Validation
 
