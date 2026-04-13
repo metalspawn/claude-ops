@@ -1,7 +1,7 @@
 {
   "name": "orc",
-  "version": "0.4.0",
-  "description": "Orchestrated agentic workflows for Claude Code — plan, review, and execute with parallel quality gates",
+  "version": "0.5.0",
+  "description": "Orchestrated agentic workflows for Claude Code — plan, execute, and ship with automated quality gates",
   "author": {
     "name": "metalspawn"
   },
