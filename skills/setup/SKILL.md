@@ -98,7 +98,16 @@ If `package.json` exists, read `scripts` to find exact commands. For other stack
 - Check if `mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot` tool is available.
 - If available and a dev server command is detected (e.g., `scripts.dev` in package.json, `bin/rails server`): note that visual verification is possible.
 
-Record: stack, test command + result, build command + result, dependencies installed (yes/no), env file (yes/no/template only), visual verification (available/not available).
+**Check debug log access:**
+- Look for log output paths:
+  - Rails: `log/development.log`
+  - Node: check for logging config (e.g., `pino`, `winston`, `debug` in dependencies)
+  - Python: `logging` config in settings or `pyproject.toml`
+  - Generic: `logs/` directory, `*.log` files
+- Check if Chrome DevTools MCP console access is available (`mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages`) — enables browser console log capture.
+- Check if a `DEBUG` or `LOG_LEVEL` env var is documented in `.env.example` or similar.
+
+Record: stack, test command + result, build command + result, dependencies installed (yes/no), env file (yes/no/template only), visual verification (available/not available), debug logs (accessible/path or not found).
 
 ### Step 6: Audit CLAUDE.md
 
@@ -135,6 +144,7 @@ Stack: [detected stack]
 [✓/✗] Build/Types: [command] — [pass/fail/error summary]
 [✓/✗] Environment: [.env found / .env.example only / none]
 [✓/✗] Visual verification: [available / not available]
+[✓/✗] Debug logs: [path or method / not found]
 
 ### CLAUDE.md
 [✓/✗] Branch Naming section
