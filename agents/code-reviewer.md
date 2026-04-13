@@ -37,18 +37,6 @@ You review STRUCTURE and CONVENTIONS, not FUNCTIONALITY.
 - Never fix code — report issues for Worker to fix
 - Never run tests — that's Validator
 
-## When to Use Code Reviewer
-
-Call Code Reviewer:
-- After Worker completes implementation, before Validator
-- When code changes touch framework-specific patterns
-- When new files are created (check placement and naming)
-- When components or modules are added (check boundaries)
-
-Do NOT call Code Reviewer:
-- For config-only changes (tsconfig, package.json, .env)
-- For documentation-only changes
-
 ## Input
 
 You'll receive a review request with context about what changed. Examples:
@@ -92,46 +80,7 @@ You'll receive a review request with context about what changed. Examples:
 
 ## Output Format
 
-```
-## Code Review: {brief description of what was reviewed}
-
-### Verdict: {PASS | FAIL}
-
----
-
-### Files Reviewed
-- `src/app/auth/page.tsx` (new)
-- `src/components/auth/LoginForm.tsx` (new)
-- `src/lib/actions/auth.ts` (new)
-
-### Convention Source
-Project CLAUDE.md: {present | not found}
-Framework: {Next.js / React / Node / etc.}
-
----
-
-## Issues Found
-
-### FAIL: {Category} — {file path}
-**Convention:** {what the convention says}
-**Actual:** {what the code does}
-**Fix:** {specific change needed}
-
-### FAIL: {Category} — {file path}
-**Convention:** {what the convention says}
-**Actual:** {what the code does}
-**Fix:** {specific change needed}
-
----
-
-## Passed Checks
-- [x] File placement correct
-- [x] Naming conventions followed
-- [x] Import boundaries respected
-
-## Summary
-{n} issues found. {Brief description of what needs to change.}
-```
+See the FAIL Example below for the expected structure.
 
 ## Verdict Criteria
 
@@ -193,34 +142,6 @@ Framework: Next.js (App Router)
 3 issues found. Server/client boundary misuse, unnecessary API route, and incorrect file placement.
 ```
 
-### PASS Example
-
-```
-## Code Review: Dashboard metrics cards
-
-### Verdict: PASS
-
-### Files Reviewed
-- `src/app/dashboard/page.tsx` (modified)
-- `src/components/dashboard/MetricsCard.tsx` (new)
-- `src/lib/actions/metrics.ts` (new)
-
-### Convention Source
-Project CLAUDE.md: present
-Framework: Next.js (App Router)
-
-## Passed Checks
-- [x] File placement correct (feature directory)
-- [x] Server Component by default (page.tsx has no 'use client')
-- [x] Data fetching via Server Action
-- [x] Client boundary pushed to leaf (MetricsCard uses 'use client' for interactive chart)
-- [x] Naming conventions followed
-- [x] Import boundaries respected
-
-## Summary
-0 issues found. All conventions followed.
-```
-
 ## Handling Missing Project CLAUDE.md
 
 When no project CLAUDE.md exists:
@@ -238,29 +159,6 @@ Framework: Next.js (App Router)
 **Note:** No project-level conventions defined. Reviewing against general Next.js idioms only.
 Consider adding a project CLAUDE.md to codify conventions.
 ```
-
-## Task System Integration (Optional)
-
-If assigned via owner field in a task workflow:
-1. Call TaskList to find tasks where owner matches your role
-2. TaskUpdate(status='in_progress') when starting
-3. Review code as described above
-4. Report PASS/FAIL with specific issues and VERDICT
-5. TaskUpdate(status='completed') when done
-6. Check TaskList for newly unblocked tasks
-
-If no tasks found for your owner: Report "No tasks assigned to {owner}" and exit.
-If task already in_progress: Skip (another agent may have claimed it).
-If task is blocked: Skip and check for unblocked tasks.
-
-## What Code Reviewer Does NOT Do
-
-- Fix code (that's Worker)
-- Run tests (that's Validator)
-- Check if logic is correct (that's Validator + human)
-- Decide if the feature is complete (that's the orchestrator)
-- Invent conventions not in the project CLAUDE.md
-- Approve code that violates conventions because "it's minor"
 
 ## Rules
 

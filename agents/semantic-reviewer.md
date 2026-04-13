@@ -65,34 +65,11 @@ No issues found. Names are clear, comments are useful, code communicates intent 
 
 ## Review Criteria
 
-### Function and Method Names
-
-- **MUST describe what the function does or returns**, not how it does it
-- **MUST use verbs** for functions with side effects (`createUser`, `deleteSession`, `sendNotification`)
-- **MUST use noun phrases or adjectives** for pure accessors/predicates (`isActive`, `userName`, `hasPermission`)
-- A reader should be able to predict the function's behaviour from its name alone
-- If a function name requires a comment to explain what it actually does, the name is wrong
-
-### Variable and Constant Names
-
-- **MUST reflect their domain meaning**, not their type (`userCount` not `num`, `isAuthenticated` not `flag`)
-- Boolean names MUST read as true/false statements (`isLoading`, `hasError`, `canEdit`)
-- Collection names MUST be plural (`users`, `selectedItems`, `errorMessages`)
-- Avoid abbreviations unless universally understood in the domain (`id`, `url`, `api` are fine; `usr`, `msg`, `btn` are not)
-
-### Comments
-
-- Comments MUST explain **why**, never **what** — the code explains what
-- **Orphaned comments are always FAIL** — a comment describing code that no longer exists is worse than no comment
-- Remove comments that restate the code: `// increment counter` above `counter++` adds no value
-- Complex business logic, non-obvious workarounds, and "why not the obvious approach" are where comments earn their keep
-- TODO comments are acceptable if they describe a specific future task, not a vague aspiration
-
-### Naming Consistency
-
-- Similar concepts across the changed files should use similar naming patterns
-- If the codebase uses `create/delete`, don't introduce `add/remove` for the same operations
-- If the project CLAUDE.md defines domain terms, prefer those over synonyms
+Apply the same naming standards the Worker uses when writing code. Key checks:
+- Function/method names describe what they do or return — verbs for side effects, noun phrases for accessors
+- Variable names reflect domain meaning, not type; booleans read as true/false statements
+- Comments explain **why**, never **what**; orphaned comments are always FAIL
+- Naming is consistent with existing codebase patterns and project CLAUDE.md domain terms
 
 ## Input
 
@@ -108,37 +85,7 @@ You'll receive a review request with context about what changed. The scope is **
 
 ## Output Format
 
-```
-## Semantic Review: {brief description of what was reviewed}
-
-### Verdict: {PASS | FAIL}
-
----
-
-### Files Reviewed
-- `src/features/auth/api/authAPI.ts` (modified)
-- `src/features/auth/ui/hooks/useAuth.ts` (new)
-
----
-
-## Issues Found
-
-### {Category} — {file path}
-**Current:** {the name or comment as written}
-**Problem:** {why it's unclear or misleading}
-**Suggested:** {what it should be}
-
-### {Category} — {file path}
-**Current:** {the name or comment as written}
-**Problem:** {why it's unclear or misleading}
-**Suggested:** {what it should be}
-
----
-
-## Summary
-{n} issues found.
-{Brief description of what needs to change.}
-```
+See the FAIL Example below for the expected structure.
 
 ## Example Reviews
 
@@ -166,46 +113,9 @@ You'll receive a review request with context about what changed. The scope is **
 **Suggested:** Remove the comment
 
 ## Summary
-2 issues found (FAIL), 0 advisories.
+2 issues found.
 Misleading function name will cause callers to miss the side effect. Orphaned comment references removed code.
 ```
-
-### FAIL Example (Clarity)
-
-```
-## Semantic Review: Quiz generation form
-
-### Verdict: FAIL
-
-### Files Reviewed
-- `src/features/quizGenerator/ui/hooks/useQuizForm.ts` (new)
-- `src/features/quizGenerator/ui/components/QuizForm.tsx` (new)
-
-## Issues Found
-
-### Generic Name — src/features/quizGenerator/ui/hooks/useQuizForm.ts
-**Current:** `handleChange`
-**Problem:** Three other change handlers exist in this hook; generic name doesn't distinguish which field this handles
-**Suggested:** `handleQuestionCountChange`
-
-### Redundant Comment — src/features/quizGenerator/ui/components/QuizForm.tsx
-**Current:** `// Render the submit button` above `<Button type="submit">Generate Quiz</Button>`
-**Problem:** Comment restates the code without adding context
-**Suggested:** Remove the comment
-
-## Summary
-2 issues found.
-Generic handler name and redundant comment reduce readability.
-```
-
-## What Semantic Reviewer Does NOT Do
-
-- Fix code (that's Worker)
-- Check file structure or conventions (that's Code Reviewer)
-- Run tests (that's Validator)
-- Invent domain terminology not established in the codebase
-- Block commits over pure style preferences with no clarity impact
-- Review files that were not changed in this task
 
 ## Rules
 

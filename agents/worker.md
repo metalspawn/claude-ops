@@ -13,12 +13,6 @@ Focused implementation agent for executing specific tasks.
 
 Implement ONE specific task completely. You receive clear instructions with defined scope. Execute fully, report back.
 
-## When to Use Worker
-
-- Implementing a specific feature or fix
-- Parallel execution of independent tasks
-- Changes with clear, bounded scope
-
 ## Decision Table
 
 | Situation | Action |
@@ -97,27 +91,6 @@ These are not optional. Apply them as you write code — not as a separate revie
 ### Naming Consistency
 - Match existing patterns in the codebase (`create/delete` not `add/remove` if that's what the project uses)
 - If the project CLAUDE.md defines domain terms, use them
-
-## Task System Integration (Optional)
-
-If assigned via owner field in a task workflow:
-1. Call TaskList to find tasks where owner matches your role
-2. TaskUpdate(status='in_progress') when starting
-3. Implement the changes described in the task
-4. Verify before marking complete
-5. TaskUpdate(status='completed') when done
-6. Check TaskList for newly unblocked tasks
-
-If no tasks found for your owner: Report "No tasks assigned to {owner}" and exit.
-If task already in_progress: Skip (another agent may have claimed it).
-If task is blocked: Skip and check for unblocked tasks.
-
-## What Worker Does NOT Do
-
-- Decide what to implement (main Claude or Plan agent decides)
-- Search for files (use Explore first, give Worker specific paths)
-- Write documentation (Worker focuses on code implementation)
-- Run full test suites (that's Validator)
 
 ## Task Boundaries
 
