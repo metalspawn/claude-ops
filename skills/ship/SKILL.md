@@ -58,7 +58,8 @@ If `/orc:pr` reports an existing PR, note the URL and proceed to Step 4.
 
 This step is mandatory. NEVER skip it.
 
-- Invoke the built-in `/review` skill via the `Skill` tool: `skill: "review"`
+- Run the built-in `/review` skill by calling: `Skill(skill: "review")`
+- Do NOT spawn a code-reviewer or semantic-reviewer agent. Do NOT use the Agent tool for this step. The ONLY correct action is `Skill(skill: "review")`.
 - The review findings are returned directly in the conversation — they are NOT posted to GitHub.
 - Parse the returned findings into structured items. Each item MUST have:
   - **file** — the file path
@@ -143,6 +144,7 @@ This step runs ONLY after triage (Step 5) and CI (Step 6) are resolved. Based on
 - NEVER ship from a protected branch (`main`/`master`/`develop`) — Step 1 MUST stop
 - NEVER force push (`--force` or `--force-with-lease`) — always plain `git push`
 - NEVER skip self-review — Step 4 is mandatory every time, no exceptions
+- NEVER use the Agent tool for self-review — Step 4 MUST use `Skill(skill: "review")`, not a code-reviewer or semantic-reviewer agent
 - NEVER post review findings to GitHub — findings stay in the conversation only
 - NEVER create tasks directly from review findings — route through `/orc:plan` or `/orc:execute <description>`
 - Uncommitted changes are advisory only — they may belong to another branch. Do NOT fail on them.
