@@ -28,12 +28,12 @@ Add this to your global `~/.claude/CLAUDE.md` if you want Claude to automaticall
 | `/orc:branch <desc>` | Need a feature branch | Create branch from name/ticket (auto-invoked by `/orc:tasks`) |
 | `/orc:tasks` | After plan approval | Branch setup → create tasks with acceptance criteria |
 | `/orc:execute` | After tasks exist | Run the worker → review → validate → commit pipeline |
-| `/orc:ship` | After execution completes | Push → PR → self-review → triage findings |
+| `/orc:submit` | After execution completes | Push → PR → self-review → triage findings |
 | `/orc:pull-comments` | After human PR review | Fetch external comments → categorise → triage → route |
 
-The full flow is: `/orc:plan` → approve → `/orc:tasks` → confirm → `/orc:execute` → `/orc:ship`.
-For multi-PR features: `/orc:decompose` → approve → then for each step: `/orc:plan` → `/orc:tasks` → `/orc:execute` → `/orc:ship`.
-After human review: `/orc:pull-comments` → triage → `/orc:plan` or `/orc:execute` → `/orc:ship`.
+The full flow is: `/orc:plan` → approve → `/orc:tasks` → confirm → `/orc:execute` → `/orc:submit`.
+For multi-PR features: `/orc:decompose` → approve → then for each step: `/orc:plan` → `/orc:tasks` → `/orc:execute` → `/orc:submit`.
+After human review: `/orc:pull-comments` → triage → `/orc:plan` or `/orc:execute` → `/orc:submit`.
 For clear, direct tasks: `/orc:execute <task>` (creates a single task and runs the pipeline).
 
 ## When to Plan

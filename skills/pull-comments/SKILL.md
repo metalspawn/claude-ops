@@ -91,8 +91,8 @@ Based on the user's selection:
 
 - **"none" selected:** Done. No further action needed.
 - **Questions selected:** Advise the user to reply on the PR directly — these are conversational, not code changes. Do NOT route questions to planning or execution.
-- **Code-change items selected (non-trivial — multi-file or architectural):** Summarise the selected items as a brief. Tell the user: "Run `/orc:plan` to plan the changes, then `/orc:tasks` → `/orc:execute` → `/orc:ship`."
-- **Code-change items selected (trivial — single-file, obvious fix):** Summarise. Tell the user: "Run `/orc:execute <description>` to address directly, then `/orc:ship`."
+- **Code-change items selected (non-trivial — multi-file or architectural):** Summarise the selected items as a brief. Tell the user: "Run `/orc:plan` to plan the changes, then `/orc:tasks` → `/orc:execute` → `/orc:submit`."
+- **Code-change items selected (trivial — single-file, obvious fix):** Summarise. Tell the user: "Run `/orc:execute <description>` to address directly, then `/orc:submit`."
 
 If the selection contains a mix (e.g., questions and code changes), present each group's routing separately.
 

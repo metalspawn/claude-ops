@@ -1,6 +1,6 @@
 ---
 name: pr
-description: "Create or update a pull request with project convention detection. Invoked from /orc:ship or directly."
+description: "Create or update a pull request with project convention detection. Invoked from /orc:submit or directly."
 ---
 
 # /orc:pr — Pull Request Creation
@@ -87,8 +87,8 @@ Report the PR URL when done.
 - **No commits ahead of base branch** — report "No commits ahead of base branch — nothing to PR" and STOP.
 - **`gh` CLI not authenticated** — report the error and STOP. Do NOT attempt to fix authentication.
 - **PR template is malformed or empty** — fall back to the default format.
-- **Invoked directly (not from ship)** — still works. Ship's preflight (protected branch check, push) is not repeated here; the caller is responsible.
-- **Branch not pushed to remote** — report "Branch is not pushed to remote. Run `git push` first or use `/orc:ship`." and STOP. Do NOT push.
+- **Invoked directly (not from submit)** — still works. Submit's preflight (protected branch check, push) is not repeated here; the caller is responsible.
+- **Branch not pushed to remote** — report "Branch is not pushed to remote. Run `git push` first or use `/orc:submit`." and STOP. Do NOT push.
 - **`gh pr create` fails** — report the error verbatim and STOP. Do NOT retry.
 
 ---

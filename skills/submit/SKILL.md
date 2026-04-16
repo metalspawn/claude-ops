@@ -1,9 +1,9 @@
 ---
-name: ship
+name: submit
 description: "Push current branch, create or update a PR, run self-review, and triage findings. Run after /orc:execute completes."
 ---
 
-# /orc:ship — Ship and Review
+# /orc:submit — Submit for Review
 
 ## Input
 
@@ -21,11 +21,11 @@ Run these checks before doing anything else.
 
 **Branch check:**
 - Get current branch: `git branch --show-current`
-- STOP immediately if branch is `main`, `master`, or `develop`. Tell the user: "Cannot ship from a protected branch. Switch to a feature branch first."
+- STOP immediately if branch is `main`, `master`, or `develop`. Tell the user: "Cannot submit from a protected branch. Switch to a feature branch first."
 
 **Commits ahead check:**
 - Run `git log origin/main..HEAD --oneline`. If `origin/main` does not exist, try `origin/master`.
-- STOP if no commits are ahead. Tell the user: "No commits ahead of base branch — nothing to ship."
+- STOP if no commits are ahead. Tell the user: "No commits ahead of base branch — nothing to submit."
 
 **Uncommitted changes check:**
 - Run `git status --porcelain`.
@@ -89,7 +89,7 @@ If no findings from the review, skip to Step 7 with "no findings".
 3. [file:line] Description
 ```
 
-**Default: address all findings.** Present the numbered list, then proceed to address all of them unless the user has already specified a different selection (e.g., "none", specific numbers). The user can intervene to course-correct at any point.
+**Present the numbered list, then wait for the caller to specify which findings to address** (e.g., "all", "none", specific numbers). If the caller has already specified a default (e.g., via CLAUDE.md or arguments), apply that default without pausing.
 
 ### Step 6: Watch CI
 
@@ -120,8 +120,8 @@ gh run view <id> --log-failed
 
 2. Read the error output and diagnose the root cause.
 3. Present the diagnosis to the user and recommend next steps:
-   - Trivial fix (config, typo, missing env var): "Run `/orc:execute <description>` to fix, then `/orc:ship`."
-   - Non-trivial fix (logic error, test failure, dependency issue): "Run `/orc:plan` to plan the fix, then `/orc:tasks` → `/orc:execute` → `/orc:ship`."
+   - Trivial fix (config, typo, missing env var): "Run `/orc:execute <description>` to fix, then `/orc:submit`."
+   - Non-trivial fix (logic error, test failure, dependency issue): "Run `/orc:plan` to plan the fix, then `/orc:tasks` → `/orc:execute` → `/orc:submit`."
 4. **You MUST stop here and wait for the user to decide.** Do NOT proceed to Step 7 after a CI failure.
 
 ### Step 7: Next steps
@@ -132,7 +132,7 @@ This step runs ONLY after triage (Step 5) and CI (Step 6) are resolved. Based on
   Summarise the selected findings as a brief, then invoke `/orc:plan` to plan the changes. The orchestrator continues the full pipeline from there.
 
 - **Findings selected (trivial — single-file, obvious fix):**
-  Summarise the selected findings, then invoke `/orc:execute <description>` to address directly. After execution completes, re-invoke `/orc:ship` to push, re-review, and check CI.
+  Summarise the selected findings, then invoke `/orc:execute <description>` to address directly. After execution completes, re-invoke `/orc:submit` to push, re-review, and check CI.
 
 - **No findings or "none" selected:**
   "PR is ready for human review." Report the PR URL.
@@ -141,7 +141,7 @@ This step runs ONLY after triage (Step 5) and CI (Step 6) are resolved. Based on
 
 ## Rules
 
-- NEVER ship from a protected branch (`main`/`master`/`develop`) — Step 1 MUST stop
+- NEVER submit from a protected branch (`main`/`master`/`develop`) — Step 1 MUST stop
 - NEVER force push (`--force` or `--force-with-lease`) — always plain `git push`
 - NEVER skip self-review — Step 4 is mandatory every time, no exceptions
 - NEVER use the Agent tool for self-review — Step 4 MUST use `Skill(skill: "review")`, not a code-reviewer or semantic-reviewer agent

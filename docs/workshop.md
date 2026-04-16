@@ -6,7 +6,7 @@
 **Format:** Walkthrough + hands-on (everyone drives)
 **Prerequisite:** Claude Code installed and authenticated, `orc` plugin installed
 
-This workshop covers the agentic workflow for non-trivial code changes: **collaborative planning** followed by **autonomous execution** with parallel review gates, then **shipping and handling feedback**. By the end, you'll have run through the full cycle yourself.
+This workshop covers the agentic workflow for non-trivial code changes: **collaborative planning** followed by **autonomous execution** with parallel review gates, then **submitting and handling feedback**. By the end, you'll have run through the full cycle yourself.
 
 ---
 
@@ -35,12 +35,12 @@ When you ask an AI assistant to "add feature X", it jumps straight to implementa
 
 This is the same problem we'd have with a new hire who skips the team's PR process. The fix isn't better prompts — it's better process.
 
-### The Solution: Plan → Execute → Ship → Feedback
+### The Solution: Plan → Execute → Submit → Feedback
 
 For larger features that span multiple PRs, `/orc:decompose` breaks them into ordered, independently shippable steps first — then each step runs through the cycle below.
 
 ```
-/orc:plan        /orc:tasks       /orc:execute        /orc:ship        /orc:pull-comments
+/orc:plan        /orc:tasks       /orc:execute        /orc:submit        /orc:pull-comments
 ┌────────────┐   ┌────────────┐   ┌────────────────┐   ┌────────────┐   ┌─────────────────┐
 │            │   │            │   │                │   │            │   │                 │
 │ Explore    │OK │ Create     │OK │ For each task: │OK │ Push → PR  │   │ Fetch external  │
@@ -60,7 +60,7 @@ For larger features that span multiple PRs, `/orc:decompose` breaks them into or
                                                              │       │           │
                                                              ▼       ▼           │
                                                         /orc:execute ◄───────────┘
-                                                        (fix and re-ship)
+                                                        (fix and re-submit)
 ```
 
 Three checkpoints give you control:
@@ -68,7 +68,7 @@ Three checkpoints give you control:
 2. **After tasks** — review task breakdown and acceptance criteria
 3. **Execute** — autonomous from here
 
-Then ship opens the PR, self-reviews it, and pull-comments brings external feedback back into the cycle.
+Then submit opens the PR, self-reviews it, and pull-comments brings external feedback back into the cycle.
 
 ### Why Not Just "Claude, do the thing"?
 
@@ -93,7 +93,7 @@ The `orc` plugin provides seven skills and five agents:
 | `/orc:branch` | Create feature branch (auto-invoked by `/orc:tasks` or standalone) |
 | `/orc:tasks` | Branch setup → create tasks with acceptance criteria |
 | `/orc:execute` | Worker → parallel review gates → commit |
-| `/orc:ship` | Push → PR → self-review → triage findings |
+| `/orc:submit` | Push → PR → self-review → triage findings |
 | `/orc:pull-comments` | Fetch external PR comments → categorise → triage |
 
 **Agents (specialised roles):**
@@ -246,10 +246,10 @@ Approve when satisfied.
 - Does the validator distinguish new failures from pre-existing ones?
 - When a gate fails, does the fix cycle work?
 
-#### Step 4: Ship (~5 min)
+#### Step 4: Submit (~5 min)
 
 ```
-/orc:ship
+/orc:submit
 ```
 
 **Watch for:**
@@ -259,7 +259,7 @@ Approve when satisfied.
 - How are findings categorised (Must Address / Should Consider / Nitpick)?
 - Does the triage flow feel natural?
 
-If findings are selected, address them via `/orc:execute <description>` and re-ship.
+If findings are selected, address them via `/orc:execute <description>` and re-submit.
 
 #### Step 5: Handle PR Feedback (~5 min)
 
@@ -288,7 +288,7 @@ After the cycle completes, check:
 2. **Where did it add friction?** Was any gate unnecessary for this change?
 3. **What would you change?** What conventions matter most for your projects?
 4. **Project CLAUDE.md:** What conventions should you codify?
-5. **Shipping workflow:** Did the self-review catch things you'd have missed? Was the PR body useful?
+5. **Submit workflow:** Did the self-review catch things you'd have missed? Was the PR body useful?
 
 ---
 

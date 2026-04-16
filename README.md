@@ -9,19 +9,19 @@ Multi-PR feature:
 /orc:decompose → approve → then per step ↓
 
 Single PR:
-/orc:plan → approve → /orc:tasks → confirm → /orc:execute → /orc:ship
+/orc:plan → approve → /orc:tasks → confirm → /orc:execute → /orc:submit
                           │                       │               │
                    creates branch          worker → review    push → PR → self-review
                    (if needed)             gates → commit          │
-                                                            findings? → fix → /orc:ship
+                                                            findings? → fix → /orc:submit
                                                             clean? → ready for human review
                                                                        │
                                                               /orc:pull-comments
                                                                        │
-                                                              triage → fix → /orc:ship
+                                                              triage → fix → /orc:submit
 
 Direct task:
-/orc:execute <task> → review gates → commit → /orc:ship
+/orc:execute <task> → review gates → commit → /orc:submit
 ```
 
 Eight skills. Five specialised agents.
@@ -33,15 +33,15 @@ Eight skills. Five specialised agents.
 | **Branch** | `/orc:branch` | Create a feature branch (invoked by `/orc:tasks` or directly) |
 | **Tasks** | `/orc:tasks` | Branch setup → create tasks with acceptance criteria from the plan |
 | **Execute** | `/orc:execute` | For each task: worker implements → three parallel review gates → commit |
-| **Ship** | `/orc:ship` | Push → create/update PR → self-review → triage findings |
-| **PR** | `/orc:pr` | Create or update a PR with project convention detection (invoked by `/orc:ship` or directly) |
+| **Submit** | `/orc:submit` | Push → create/update PR → self-review → triage findings |
+| **PR** | `/orc:pr` | Create or update a PR with project convention detection (invoked by `/orc:submit` or directly) |
 | **Review** | `/orc:pull-comments` | Fetch external PR comments → categorise → triage → route to next step |
 
 For simple, direct tasks: `/orc:execute <task>` skips planning and creates a single task inline.
 
 ### For Larger Features
 
-When work spans multiple PRs, start with `/orc:decompose` to break the feature into ordered, independently shippable steps. After approving the decomposition, run each step through the standard `/orc:plan` → `/orc:tasks` → `/orc:execute` → `/orc:ship` cycle.
+When work spans multiple PRs, start with `/orc:decompose` to break the feature into ordered, independently shippable steps. After approving the decomposition, run each step through the standard `/orc:plan` → `/orc:tasks` → `/orc:execute` → `/orc:submit` cycle.
 
 ## Agents
 
@@ -96,19 +96,19 @@ Both `/orc:decompose` and `/orc:plan` pause after codebase exploration to check 
 
 When everything is clear, the step is skipped automatically — no unnecessary interruptions.
 
-## Shipping
+## Submitting
 
-Once all tasks pass their review gates and are committed, `/orc:ship` handles the PR lifecycle:
+Once all tasks pass their review gates and are committed, `/orc:submit` handles the PR lifecycle:
 
 1. **Push and PR** — pushes the branch and creates (or updates) a pull request
 2. **Self-review** — runs the built-in `/review` skill against the PR to catch issues before a human sees them
 3. **Triage** — categorises findings by severity and routes them:
-   - Findings that need work feed back into `/orc:plan` (for non-trivial changes) or `/orc:execute` (for straightforward fixes), then `/orc:ship` again
+   - Findings that need work feed back into `/orc:plan` (for non-trivial changes) or `/orc:execute` (for straightforward fixes), then `/orc:submit` again
    - A clean self-review means the PR is ready for human review
 
-After a human reviews the PR, `/orc:pull-comments` fetches their feedback, categorises it, and routes it the same way — back through `/orc:plan` or `/orc:execute` and then `/orc:ship` to update the PR.
+After a human reviews the PR, `/orc:pull-comments` fetches their feedback, categorises it, and routes it the same way — back through `/orc:plan` or `/orc:execute` and then `/orc:submit` to update the PR.
 
-No new agents are needed for shipping. `/orc:ship` delegates to the built-in `/review` skill for self-review.
+No new agents are needed for submitting. `/orc:submit` delegates to the built-in `/review` skill for self-review.
 
 ## Installation
 
