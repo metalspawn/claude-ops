@@ -1,7 +1,7 @@
 ---
 name: validator
 description: "Quality assurance agent. Runs tests and type checks. Reports pass/fail with specific errors. Does not fix issues."
-model: inherit
+model: sonnet
 color: orange
 ---
 
